@@ -1,0 +1,2082 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>13. Introducción a las convoluciones. &#8212; Trabajando con PyTorch</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'jupyters/Capitulo5Convoluciones';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="26. Introducción NLP con Pytorch" href="Tema11_NLP.html" />
+    <link rel="prev" title="12. Introducción al espacio de las Features" href="Capitulo4bisEspacioFeatures.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../introduccion.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Trabajando con PyTorch</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../introduccion.html">
+                    Introducción
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Pycharm</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="OperacionesTensores.html">1. Los tensores en PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Calcularderivadas.html">2. Introducción a PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OptimizadoresPyTorch.html">3. Optimizadores en PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tema1regresionlineal.html">4. Regresión lineal.</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Tema%202.html">6. Regresión lineal. Continuación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tema_3_clasificacion.html">7. Problemas de clasificación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capitulo4_clasificacionImagenes.html">8. Introducción clasificación de imágenes.</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="ModelosPreentrenados.html">11. TorchVision-Modelos preentrenados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Capitulo4bisEspacioFeatures.html">12. Espacio Features</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">13. Introducción a las convoluciones.</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Tema11_NLP.html">26. Lenguaje natural</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Apéndice</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Apendice.html">27. Apéndice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Índice de términos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">28. Índice de términos</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/jupyters/Capitulo5Convoluciones.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Introducción a las convoluciones.</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">13. Introducción a las convoluciones.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#convoluciones">14. Convoluciones.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#filtro-kernel">15. Filtro / Kernel</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#moviendo-la-ventana-o-kernel">15.1. Moviendo la ventana o kernel</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#convolucion-en-pytorch">16. Convolución en PyTorch</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#padding">17. Padding.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pooling">18. Pooling</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#aplanamiento-o-flattening">19. Aplanamiento o Flattening</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#lenet-5">20. LeNet-5</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#clasificacion-multiclase">21. Clasificación multiclase.</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generacion-de-datos">21.1. Generación de datos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparacion-de-los-datos">21.2. Preparación de los datos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcion-de-perdida-softmax">21.3. Función de pérdida. softmax</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logsoftmax">21.4. LogSoftmax.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcion-de-perdida-negative-log-likelihood">21.5. Función de pérdida: Negative Log-Likelihood.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcion-de-perdida-cross-entropy">21.6. Función de pérdida: Cross-Entropy</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-del-modelo">22. Configuración del modelo</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizando-los-filtros">23. Visualizando los filtros</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizando-filtros">24. Visualizando filtros.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#hooks">25. Hooks</a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="introduccion-a-las-convoluciones">
+<h1><span class="section-number">13. </span>Introducción a las convoluciones.<a class="headerlink" href="#introduccion-a-las-convoluciones" title="Permalink to this heading">#</a></h1>
+<p>En este capítulo vamos a necesitar los siguientes elementos que aquí importamos</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">torchvision.transforms</span> <span class="kn">import</span> <span class="n">Compose</span><span class="p">,</span> <span class="n">Normalize</span>
+<span class="kn">from</span> <span class="nn">data_generation.image_classification</span> <span class="kn">import</span> <span class="n">generate_dataset</span>
+<span class="kn">from</span> <span class="nn">helpers</span> <span class="kn">import</span> <span class="n">index_splitter</span><span class="p">,</span> <span class="n">make_balanced_sampler</span> <span class="c1"># construidos en capitulo 4</span>
+<span class="kn">from</span> <span class="nn">stepbystep.v1</span> <span class="kn">import</span> <span class="n">StepByStep</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="convoluciones">
+<h1><span class="section-number">14. </span>Convoluciones.<a class="headerlink" href="#convoluciones" title="Permalink to this heading">#</a></h1>
+<p id="index-0">En el último capítulo anterior, hablamos de los píxeles como características o features: consideramos cada píxel como una característica individual e independiente, por lo que perdiamos información al aplanar la imagen. También hablamos
+de los pesos como píxeles, y de cómo podíamos interpretar los pesos utilizados por una neurona como una imagen o, más concretamente, como un filtro.</p>
+<p>Ahora, es el momento de dar un paso más y aprender sobre las convoluciones. Una convolución es “una operación matemática sobre dos funciones (f y g) que produce una tercera función (f * g) que expresa cómo la forma de una es modificada por la otra”. En el procesamiento de  imágenes, una matriz de convolución también se denomina kernel o filtro.</p>
+<p>Las operaciones típicas de procesamiento de imágenes, como el desenfoque, la nitidez, la detección de bordes, etc., se llevan a cabo mediante una convolución entre un núcleo y una imagen.</p>
+</section>
+<section id="filtro-kernel">
+<h1><span class="section-number">15. </span>Filtro / Kernel<a class="headerlink" href="#filtro-kernel" title="Permalink to this heading">#</a></h1>
+<p>En pocas palabras, se define un filtro (o núcleo, pero aquí nos quedamos con la expresión <em>filtro</em>), y se aplica este filtro a una imagen (es decir, se convoluciona una imagen). Normalmente, los filtros son pequeñas matrices cuadradas. La convolución en sí se realiza aplicando el filtro a la imagen repetidamente. Intentemos un ejemplo concreto para que quede más claro.</p>
+<p>Para explicar mejor todo esto, usamos una imagen de un solo canal, y el filtro más aburrido de todos, el <em>filtro de identidad</em>.</p>
+<p><img alt="filtro de convolución" src="../_images/Convolucion1.PNG" /></p>
+<p id="index-1">¿Ve la región gris en la esquina superior izquierda de la imagen, que tiene el mismo tamaño que el filtro? Esa es la región a la que se aplica el filtro y se llama <em>campo receptivo</em>, haciendo una analogía con el funcionamiento de la visión humana.
+a la forma en que funciona la visión humana.</p>
+<p>En la pagina web <a href="https://setosa.io/ev/image-kernels/" target="_blan">  https://setosa.io/ev/image-kernels/ </a> puedes ver de forma real cómo se transforma una imagen después de aplicar diversos kernels.</p>
+<p>Además, fíjate en las formas que hay debajo de las imágenes: las formas siguen la convención de formas NCHW utilizada por PyTorch. Hay una imagen, un canal, de seis por seis píxeles. Hay un filtro de un canal, de tres por tres píxeles.</p>
+<p>Por último, el asterisco representa la operación de convolución entre los dos (la imagen y el filtro).</p>
+<p>Vamos a crear matrices Numpy para seguir las operaciones, después de todo, de esta manera es más fácil de entender en el código.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">single</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="p">[[[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">single</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1, 1, 6, 6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">identity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="p">[[[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]]</span>
+<span class="p">)</span>
+<span class="n">identity</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1, 1, 3, 3)
+</pre></div>
+</div>
+</div>
+</div>
+<p>En realidad es bastante simple lo que se hace en la convolución: realiza una multiplicación entre los dos (región y filtro) por elementos (es decir número a número) y después como resultado final suma todo.</p>
+<p>Vamos a comprobarlo, ampliando la región región seleccionada:</p>
+<p><img alt="operación convolución" src="../_images/convolucion2.PNG" /></p>
+<p>Con código lo haremos de la siguiente manera</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># selección de los elementos matriz inicial</span>
+<span class="n">region</span> <span class="o">=</span> <span class="n">single</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="c1">#Multiplicamos elemento a elemento</span>
+<span class="n">filtered_region</span> <span class="o">=</span> <span class="n">region</span> <span class="o">*</span> <span class="n">identity</span>
+<span class="c1">#sumamos todos los resultados</span>
+<span class="n">total</span> <span class="o">=</span> <span class="n">filtered_region</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">total</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9
+</pre></div>
+</div>
+</div>
+</div>
+<p>Se puede concluir que hacer una convolución produce una imagen con un tamaño reducido. Es fácil ver por qué, si alejamos el zoom a la imagen completa:</p>
+<p><img alt="reducción imagen" src="../_images/convolucion3.PNG" />)</p>
+<p>Dado que el filtro se aplica a la región gris, y estamos utilizando un filtro de identidad, es bastante sencillo ver que simplemente está copiando el valor en el centro de la región. Los valores restantes simplemente se multiplican por cero y no influyen en la suma. Pero incluso si lo hicieran, no cambiaría el hecho de que el resultado de una operación es un único valor.</p>
+<section id="moviendo-la-ventana-o-kernel">
+<h2><span class="section-number">15.1. </span>Moviendo la ventana o kernel<a class="headerlink" href="#moviendo-la-ventana-o-kernel" title="Permalink to this heading">#</a></h2>
+<p>A continuación, desplazamos la región un paso hacia la derecha, es decir, cambiamos el campo receptivo, y aplicamos de nuevo el filtro:</p>
+<p><img alt="movimiento del kernel" src="../_images/convolucion4.PNG" /></p>
+<p id="index-2">El tamaño del movimiento, en píxeles, se llama <strong>stride</strong>. En nuestro ejemplo, el stride es uno.</p>
+<p>En código, significa que estamos cambiando el <em>slice</em> de la imagen de entrada:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_region</span> <span class="o">=</span> <span class="n">single</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="o">+</span><span class="mi">1</span><span class="p">):(</span><span class="mi">3</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Pero la operación sigue siendo la misma: primero, una multiplicación elemento a elemento, y luego la suma de los elementos de la matriz resultante:</p>
+<p><img alt="paso de convolución" src="../_images/convolucion5.PNG" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_filtered_region</span> <span class="o">=</span> <span class="n">new_region</span> <span class="o">*</span> <span class="n">identity</span>
+<span class="n">new_total</span> <span class="o">=</span> <span class="n">new_filtered_region</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">new_total</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5
+</pre></div>
+</div>
+</div>
+</div>
+<p>Bien. Ya tenemos un segundo valor de píxel para incorporar a nuestra imagen:</p>
+<p><img alt="resultado 1 convolución" src="../_images/convolucion6.PNG" /></p>
+<p>Podemos seguir moviendo la región gris hacia la derecha hasta que no podamos moverla más:</p>
+<p><img alt="nuevo paso" src="../_images/convolucion7.PNG" /></p>
+<p>El cuarto paso a la derecha colocará realmente la región parcialmente fuera de la imagen de entrada.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">last_horizontal_region</span> <span class="o">=</span> <span class="n">single</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="o">+</span><span class="mi">4</span><span class="p">):(</span><span class="mi">3</span><span class="o">+</span><span class="mi">4</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">last_horizontal_region</span> <span class="o">*</span> <span class="n">identity</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">last_horizontal_region</span> <span class="o">*</span> <span class="n">identity</span>
+
+<span class="ne">ValueError</span>: operands could not be broadcast together with shapes (1,1,3,2) (1,1,3,3) 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como es de esperar obtenemos un error en el cálculo.</p>
+<p>A continuación, volvemos al lado izquierdo y bajamos un escalón. Si repetimos la operación, cubriendo todas las regiones válidas, acabaremos con una imagen resultante más pequeña (a la derecha):</p>
+<p><img alt="fin convolucion" src="../_images/convolucion8.PNG" /></p>
+<p>Como la aplicación de un filtro siempre produce un único valor, la reducción es igual al tamaño del filtro menos uno. Si la imagen de entrada tiene la forma (hi, wi) (por ahora no tenemos en cuenta la dimensión del canal), y el filtro tiene la forma (hf, wf), la forma de la imagen resultante viene dada por:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+(h_i, w_i) * (h_f, w_f) = (h_i - (h_f - 1), w_i - (w_f - 1))
+\]</div>
+<p>Si suponemos que el filtro es una matriz cuadrada de tamaño f, podemos simplificar la expresión anterior a:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+(h_i, w_i) * f = (h_i - f + 1, w_i - f + 1)
+\]</div>
+<p><a href="https://www.youtube.com/watch?v=ns2L2T6wvAY" target="_blank"> En este vídeo en español </a> puedes ver también una explicación detallada de la convolución.</p>
+</section>
+</section>
+<section id="convolucion-en-pytorch">
+<h1><span class="section-number">16. </span>Convolución en PyTorch<a class="headerlink" href="#convolucion-en-pytorch" title="Permalink to this heading">#</a></h1>
+<p>Ahora que sabemos cómo funciona una convolución, vamos a probarla usando PyTorch. En primer lugar, tenemos que convertir nuestra imagen y el filtro en tensores:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">single</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">kernel_identity</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Dado que las expresiones kernel y filtro se utilizan indistintamente, especialmente cuando se trata de argumentos de diferentes métodos, estoy llamando a la variable <em>kernel_identity</em>, aunque es exactamente el mismo filtro de identidad que
+hemos utilizado hasta ahora.</p>
+<p>Al igual que las funciones de activación que hemos visto en el capítulo 4, las convoluciones también vienen en dos formatos: <em>funcional y de módulo</em>.</p>
+<p>Sin embargo, hay una diferencia fundamental entre ambas: la convolución  funcional toma el núcleo/filtro como argumento
+mientras que el módulo tiene pesos para representar el núcleo/filtro.</p>
+<p>Vamos a utilizar la convolución funcional, <a href="https://pytorch.org/docs/stable/nn.functional.html#conv2d" target="_blank"> F.conv2d </a>, para aplicar el filtro de identidad a nuestra imagen de entrada (observe que estamos usando stride=1 ya que movemos la región alrededor de un píxel a la vez):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">convolved</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">kernel_identity</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">convolved</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[9., 5., 0., 7.],
+          [0., 2., 4., 6.],
+          [7., 6., 6., 8.],
+          [3., 8., 5., 1.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como era de esperar, obtuvimos el mismo resultado mostrado en la sección anterior. No hay sorpresas.</p>
+<p>Ahora, vamos a centrar nuestra atención en el módulo de convolución de PyTorch, <a href="https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html" target="_blank"> nn.Conv2d </a>. Tiene muchos argumentos, vamos a centrarnos en los cuatro primeros de ellos:</p>
+<ul class="simple">
+<li><p><em>in_channels</em>: Número de canales en la imagen de entrada.</p></li>
+<li><p><em>out_channels</em>: Número de canales producidos por la convolución.</p></li>
+<li><p><em>kernel_size</em>: Tamaño del filtro/kernel (cuadrado)</p></li>
+<li><p><em>stride</em>: El tamaño del movimiento de la región seleccionada.</p></li>
+</ul>
+<p>Hay un par de cosas que hay que notar aquí. En primer lugar, no hay ningún argumento para el núcleo/filtro en sí, sólo hay un argumento kernel_size que es un argumento para el tamaño del kernel/filtro.</p>
+<p>En segundo lugar, es posible producir múltiples canales como salida. Esto simplemente significa que el módulo va a aprender múltiples filtros. Cada filtro va a producir un resultado diferente, que se llama un canal aquí.</p>
+<p>Hasta ahora, hemos utilizado una imagen de un solo canal como entrada, y aplicando un filtro (de tamaño tres por tres) a la misma, moviendo un píxel a la vez a la vez, lo que resulta en una salida/canal de un solo elemento. Hagámoslo en código:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">conv</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[-0.4093,  1.9382, -0.5025, -0.3305],
+          [ 0.1435, -2.2929, -1.1698,  1.7898],
+          [-4.2297,  0.0060, -0.4865, -0.0916],
+          [-2.7766,  1.3266, -0.6476,  0.2122]]]],
+       grad_fn=&lt;ConvolutionBackward0&gt;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Estos resultados resultan ser un galimatías ahora (y tus resultados, si ejecutas este código, van a ser diferentes que los míos) porque el módulo convolucional inicializa aleatoriamente los pesos que representan el núcleo/filtro.</p>
+<p>Ese es el objetivo del módulo convolucional: aprenderá el kernel/filtro por sí mismo.</p>
+<p>En la visión por ordenador tradicional, la gente desarrollaría diferentes filtros para diferentes propósitos: desenfoque, nitidez, detección de bordes, etc.</p>
+<p>Pero, en lugar de ser inteligente y tratar de idear manualmente un filtro que haga el  truco para un problema determinado, ¿por qué no subcontratar también la definición del filtro a la red neuronal? De este modo, la red propondrá filtros que destaquen características que son relevantes para la tarea en cuestión.</p>
+<p>No es de extrañar que la imagen resultante muestre ahora un atributo grad_fn: será para calcular los gradientes de modo que la red pueda aprender a cambiar los pesos que representan el filtro.</p>
+<p>Nos podiamos preguntar si podemos decirle que aprenda varios filtros a la vez?”. Claro que podemos, esa es la función del argumento out_channels. Si lo ponemos a dos, generará dos filtros (inicializados aleatoriamente):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conv_multiple</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+<span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+    <span class="n">out_channels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="c1"># Esto lo hemos cambiado ahora</span>
+    <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="n">conv_multiple</span><span class="o">.</span><span class="n">weight</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Parameter containing:
+tensor([[[[-0.0662,  0.1680, -0.0491],
+          [ 0.2698, -0.3167, -0.2492],
+          [-0.1850,  0.2319,  0.1970]]],
+
+
+        [[[-0.1586,  0.0472, -0.0319],
+          [ 0.1501,  0.3077,  0.2660],
+          [-0.1655, -0.2418, -0.3107]]]], requires_grad=True)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como puedes ver  hay dos filtros representados por matrices de tres por tres de pesos (los valores van a ser diferentes a los míos cuando el lector lo ejecute de nuevo).</p>
+<p>También podemos forzar a un módulo convolucional a utilizar un filtro concreto estableciendo sus pesos:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">conv</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_identity</span>
+    <span class="n">conv</span><span class="o">.</span><span class="n">bias</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>En el fragmento de código anterior, estamos forzando al módulo a utilizar el  núcleo de identidad que hemos utilizado hasta ahora. Como era de esperar, si convolucionamos nuestra imagen de entrada obtendremos el resultado conocido:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conv</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[9., 5., 0., 7.],
+          [0., 2., 4., 6.],
+          [7., 6., 6., 8.],
+          [3., 8., 5., 1.]]]], grad_fn=&lt;ConvolutionBackward0&gt;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Hasta ahora, hemos estado moviendo la región de interés un píxel a la vez: un stride de uno. Probemos con un paso o stride de dos para variar y veamos qué pasa con la imagen resultante.</p>
+<p>No reproducimos  el primer paso aquí porque siempre es el mismo: la región gris centrada en el número nueve.</p>
+<p><img alt="stride de dos" src="../_images/convolucion9.PNG" /></p>
+<p>El segundo paso, representado arriba, muestra la región gris movida dos píxeles a la derecha: es lo que se denomina un stride de dos.</p>
+<p>Además, observe que, si damos un paso más de dos píxeles, la región gris se situaría parcialmente fuera de la imagen subyacente. Esto era y sigue siendo un un paso que no se puede dar, por lo que sólo hay dos operaciones válidas mientras nos movemos horizontalmente. Lo mismo ocurrirá cuando nos movemos verticalmente. La primera zancada de dos píxeles hacia abajo está bien, pero la segunda será, una vez más, una operación fallida.</p>
+<p>La imagen resultante, tras las cuatro únicas operaciones válidas, tiene el siguiente aspecto:</p>
+<p><img alt="Final convolución" src="../_images/convolucion10.PNG" /></p>
+<p>El núcleo de identidad puede ser aburrido, pero es definitivamente útil para destacar el funcionamiento interno de las convoluciones. Está muy claro en la figura anterior de dónde proceden los valores de los píxeles de la imagen resultante.</p>
+<p>Además, observe que el uso de una zancada más grande hizo que la forma de la imagen resultante es aún más pequeña.</p>
+<p>Una vez más, tiene sentido: si nos saltamos píxeles en la imagen de entrada de entrada, hay menos regiones de interés a las que aplicar el filtro. En consecuencia podemos ampliar nuestra fórmula anterior para incluir el tamaño de la franja (s):</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+(h_i, w_i) * f = \left(\frac{h_i - f + 1}{s}, \frac{w_i - f + 1}{s}\right)
+\]</div>
+<p>Como hemos visto antes, el stride es sólo un argumento de la convolución, así que vamos a utilizar la convolución funcional de PyTorch para ver los resultados:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">convolved_stride2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">kernel_identity</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">convolved_stride2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[9., 0.],
+          [7., 6.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="padding">
+<h1><span class="section-number">17. </span>Padding.<a class="headerlink" href="#padding" title="Permalink to this heading">#</a></h1>
+<p id="index-3">Padding significa rellenar. Tenemos que rellenar la imagen original para que pueda soportar el “ataque” a su tamaño.</p>
+<p>Pero ¿Cómo puedo rellenar una imagen?. Podemos simplemente añadir ceros a su alrededor. Una imagen vale vale más que mil palabras en este caso:</p>
+<p><img alt="padding de una imagen" src="../_images/convolucion11.PNG" /></p>
+<p>En esta figura vemos lo que queremos decir.Añadiendo columnas y filas de ceros a su alrededor, expandimos la imagen de entrada de tal manera que la región gris comienza centrada en la esquina superior izquierda de la imagen de entrada. Este sencillo truco puede utilizarse para conservar el tamaño original de la imagen.</p>
+<p>En el código, como siempre, PyTorch nos da dos opciones: funcional (F.pad) y de módulo (nn.ConstantPad2d). Empecemos con la versión de módulo esta vez:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">constant_padder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ConstantPad2d</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">constant_padder</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[0., 0., 0., 0., 0., 0., 0., 0.],
+          [0., 5., 0., 8., 7., 8., 1., 0.],
+          [0., 1., 9., 5., 0., 7., 7., 0.],
+          [0., 6., 0., 2., 4., 6., 6., 0.],
+          [0., 9., 7., 6., 6., 8., 4., 0.],
+          [0., 8., 3., 8., 5., 1., 3., 0.],
+          [0., 7., 2., 7., 0., 1., 0., 0.],
+          [0., 0., 0., 0., 0., 0., 0., 0.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Hay dos argumentos para crear el padding: <em>padding</em>, para el número de columnas y filas a rellenar en la imagen; y <em>value</em>, para el valor con el que llenamos estas nuevas columnas y filas. También se puede hacer un relleno asimétrico, especificando una tupla en el argumento <em>padding</em> que representa (izquierda, derecha, arriba, abajo). Así, si queremos rellenar nuestra imagen sólo en los lados izquierdo y derecho, el argumento sería así (1, 1, 0, 0).</p>
+<p>Podemos conseguir el mismo resultado utilizando el relleno funcional:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">padded</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>En la versión funcional, hay que especificar el relleno como una tupla. El argumento <em>value</em> es sencillo, y hay otro argumento más argumento: el modo, que se ha establecido como constante para que coincida con la versión del módulo
+anterior.</p>
+<p>Hay otros tres modos: replicar, reflejar y circular. Vamos a a verlos, empezando por la visualización de estos métodos:</p>
+<p><img alt="tipos convolución" src="../_images/convolucion12.PNG" /></p>
+<p>En el padding por replicación, los píxeles acolchados tendrán el mismo valor que el píxel real más cercano. Las esquinas acolchadas tendrán el mismo valor que las esquinas reales. Las demás columnas (izquierda y derecha)
+y filas (arriba y abajo) replicarán los valores correspondientes de la imagen original. Los valores utilizados en la réplica están en un naranja más oscuro.</p>
+<p>En PyTorch, se puede utilizar la forma funcional F.pad con mode=”replicate”, o utilizar la versión del módulo nn.ReplicationPad2d:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">replication_padder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReplicationPad2d</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">replication_padder</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[5., 5., 0., 8., 7., 8., 1., 1.],
+          [5., 5., 0., 8., 7., 8., 1., 1.],
+          [1., 1., 9., 5., 0., 7., 7., 7.],
+          [6., 6., 0., 2., 4., 6., 6., 6.],
+          [9., 9., 7., 6., 6., 8., 4., 4.],
+          [8., 8., 3., 8., 5., 1., 3., 3.],
+          [7., 7., 2., 7., 0., 1., 0., 0.],
+          [7., 7., 2., 7., 0., 1., 0., 0.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>En el caso de padding de reflexión, la cosa se complica un poco más. Es como si las columnas y filas se utilizan como ejes para el reflejo. Así, la columna columna acolchada (olvídate de las esquinas por ahora) reflejará la
+segunda columna (ya que la primera columna es el eje de reflexión). El mismo razonamiento se aplica a la columna acolchada de la derecha. Del mismo modo, la fila superior reflejará la segunda fila (ya que la primera fila es el eje de
+eje de reflexión), y el mismo razonamiento se aplica a la fila inferior. Los valores utilizados en el reflejo están en un tono más oscuro de naranja. Las esquinas tendrán los mismos valores que la intersección de las filas y columnas reflejadas de la imagen original. Quizá  la imagen pueda transmitir la idea mejor que estas palabras.</p>
+<p>En PyTorch, puedes utilizar la forma funcional F.pad con mode=”reflect”, o utilizar la versión del módulo n.ReflectionPad2d</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reflection_padder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReflectionPad2d</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">reflection_padder</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[9., 1., 9., 5., 0., 7., 7., 7.],
+          [0., 5., 0., 8., 7., 8., 1., 8.],
+          [9., 1., 9., 5., 0., 7., 7., 7.],
+          [0., 6., 0., 2., 4., 6., 6., 6.],
+          [7., 9., 7., 6., 6., 8., 4., 8.],
+          [3., 8., 3., 8., 5., 1., 3., 1.],
+          [2., 7., 2., 7., 0., 1., 0., 1.],
+          [3., 8., 3., 8., 5., 1., 3., 1.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>En el padding circular, la columna más a la izquierda (más a la derecha) se  copia como la columna derecha (izquierda) acolchada (olvídese de las esquinas por ahora). Del mismo modo, la fila más alta (más baja) se copia como la fila inferior (superior) acolchada. Las esquinas recibirán los valores de la esquina diametralmente opuesta: el píxel superior izquierdo
+superior izquierda recibe el valor de la esquina inferior derecha de la imagen original. Una vez más, los valores utilizados en el relleno están en un más oscuros de color naranja.</p>
+<p>En PyTorch, debes utilizar la forma funcional F.pad con mode=”circular” ya que no existe una versión del módulo de
+padding (en el momento de escribir esto):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[0., 7., 2., 7., 0., 1., 0., 7.],
+          [1., 5., 0., 8., 7., 8., 1., 5.],
+          [7., 1., 9., 5., 0., 7., 7., 1.],
+          [6., 6., 0., 2., 4., 6., 6., 6.],
+          [4., 9., 7., 6., 6., 8., 4., 9.],
+          [3., 8., 3., 8., 5., 1., 3., 8.],
+          [0., 7., 2., 7., 0., 1., 0., 7.],
+          [1., 5., 0., 8., 7., 8., 1., 5.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Mediante el padding de una imagen, es posible obtener imágenes resultantes con la misma forma que las imágenes de entrada, o incluso más grandes, si se opta por rellenar más y más filas y columnas a la imagen de entrada. Suponiendo que hacemos un relleno simétrico de tamaño p la forma resultante viene dada por la siguiente fórmula:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+(h_i, w_i) * f = \left(\frac{(h_i + 2p) - f + 1}{s}, \frac{(w_i + 2p) - f + 1}{s}\right)
+\]</div>
+<p>Vamos a dejar filtro de identidad. Probemos un filtro detector de bordes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="p">[[[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]]]</span>
+<span class="p">)</span>
+<span class="n">kernel_edge</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">kernel_edge</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>torch.Size([1, 1, 3, 3])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Y vamos a aplicarlo a una región diferente de nuestra imagen de entrada (acolchada) también</p>
+<p><img alt="Nuevo filtro" src="../_images/convolucion13.PNG" /></p>
+<p>Como puede ver, los filtros, aparte del de identidad, no se limitan a copiar el valor en el centro. La multiplicación por elementos finalmente significa algo:</p>
+<p><img alt="hacer una convolucion" src="../_images/convolucion14.PNG" /></p>
+<p>Apliquemos este filtro a nuestra imagen, para poder utilizar la imagen resultante en nuestra siguiente operación:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">padded</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">conv_padded</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">kernel_edge</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="pooling">
+<h1><span class="section-number">18. </span>Pooling<a class="headerlink" href="#pooling" title="Permalink to this heading">#</a></h1>
+<p id="index-4">Ahora volvemos a la tarea de reducir las imágenes.Pooling es diferente de las operaciones anteriores: divide la imagen en pequeños trozos, realiza una operación en cada trozo (que produce un un solo valor), y pone los trozos juntos como la imagen resultante. Veamos este procedimiento mediante una imagen.</p>
+<p><img alt="Pooling 1" src="../_images/pooling1.PNG" /></p>
+<p>En la imagen de arriba, estamos realizando un <em>max-pooling</em> con un kernel de dimensión dos. Aunque no se trata de los mismos filtros que los que ya hemos visto, se sigue llamando kernel.</p>
+<p>Nuestra imagen de entrada está dividida en nueve trozos, y realizamos una simple operación operación de obtener el máximo en cada trozo (por lo tanto, max-pooling). A continuación, estos valores se juntan , en orden, para producir una imagen resultante más pequeña.</p>
+<p>Un pooling de agrupación de dos por dos da como resultado una imagen cuyas dimensiones son la mitad de la original. Un pooling de agrupación de tres por tres hace que la imagen resultante sea un tercio del tamaño del original,
+y así sucesivamente. Además, sólo cuentan los trozos completos: si probamos un núcleo de cuatro por cuatro en nuestra imagen de seis por seis, sólo cabe un trozo, y la imagen resultante tendría un solo píxel.</p>
+<p>En PyTorch, como es habitual, tenemos ambas formas: F.max_pool2d y nn.MaxPool2d. Utilicemos la forma funcional para replicar el max-pooling en la figura anterior:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pooled</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">conv_padded</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">pooled</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[22., 23., 11.],
+          [24.,  7.,  1.],
+          [13., 13., 13.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Y luego usemos la versión del módulo para ilustrar el filtro cuatro por cuatro que comentamos antes y que da como resultado un sólo valor:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">maxpool4</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">pooled4</span> <span class="o">=</span> <span class="n">maxpool4</span><span class="p">(</span><span class="n">conv_padded</span><span class="p">)</span>
+<span class="n">pooled4</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[24.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Además de la agrupación máxima (pool max), la agrupación media también es bastante común. Como su nombre indica, se mostrará el valor medio de píxeles para cada trozo. En PyTorch, tenemos F.avg_pool2d y nn.AvgPool2d.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">F</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">conv_padded</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[24., 24., 23., 23.],
+          [24., 24., 23., 23.],
+          [24., 24., 13., 13.],
+          [13., 13., 13., 13.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="aplanamiento-o-flattening">
+<h1><span class="section-number">19. </span>Aplanamiento o Flattening<a class="headerlink" href="#aplanamiento-o-flattening" title="Permalink to this heading">#</a></h1>
+<p id="index-5">Esto ya lo hemos visto. Simplemente aplana un tensor, preservando la primera dimensión de tal manera que mantenemos el número de puntos de datos mientras que colapsa todas las demás dimensiones. Tiene una versión en módulo
+nn.Flatten:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Recordemos el valor de pooled</span>
+<span class="n">pooled</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[[[22., 23., 11.],
+          [24.,  7.,  1.],
+          [13., 13., 13.]]]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">flattened</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">()(</span><span class="n">pooled</span><span class="p">)</span>
+<span class="n">flattened</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[22., 23., 11., 24.,  7.,  1., 13., 13., 13.]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>No tiene versión funcional, pero no hay necesidad de una ya que podemos podemos hacer lo mismo usando view</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pooled</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[22., 23., 11., 24.,  7.,  1., 13., 13., 13.]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Hemos realizado convoluciones, rellenos y agrupaciones en dos dimensiones porque estamos manejando imágenes. Pero hay versiones unidimensionales y tridimensionales de algunas de ellas:</p>
+<ul class="simple">
+<li><p>nn.Conv1d and F.conv1d; nn.Conv3d and F.conv3d</p></li>
+<li><p>nn.ConstandPad1d and nn.ConstandPad3d</p></li>
+<li><p>nn.ReplicationPad1d and nn.ReplicationPad3d</p></li>
+<li><p>nn.ReflectionPad1d</p></li>
+<li><p>nn.MaxPool1d and F.max_pool1d; nn.MaxPool3d and F.max_pool3d</p></li>
+<li><p>nn.AvgPool1d and F.avg_pool1d; nn.AvgPool3d and F.avg_pool3d</p></li>
+</ul>
+<p>Nos podemos preguntar lo siguiente ¿Las imágenes en color no son tridimensionales al tener tres canales?”. Pues sí, pero todavía vamos a aplicar convoluciones bidimensionales. Vamos a ir a través de un ejemplo detallado utilizando un
+imagen de tres canales en el próximo capítulo.</p>
+<p>La arquitectura típica utiliza una secuencia de uno o más bloques convolucionales típicos, y cada bloque consta de tres operaciones:</p>
+<p>1.- convolución</p>
+<p>2.- Función de activación</p>
+<p>3.- Pooling</p>
+<p>A medida que las imágenes pasen por estas operaciones, irán reduciendo su tamaño. Después de tres de estos bloques (suponiendo un tamaño de núcleo de dos para la agrupación), por ejemplo, una imagen se reducirá a 1/8 o menos de sus dimensiones (y, por tanto, a 1/64 de su número total de píxeles). La dirección número de canales/filtros producidos por cada bloque suele aumentar suele aumentar a medida que se añaden más bloques.</p>
+<p>Después de la secuencia de bloques, la imagen se aplana: es de esperar que, en esta fase, no se pierda información por considerar cada valor en el tensor aplanado una característica por sí misma.</p>
+<p>Una vez que los rasgos se disocian de los píxeles, se convierte en un problema bastante estándar, como los que ya hemos trabajado en capítulos anteriores:las características o features alimentan una o más capas ocultas, y una capa de salida
+produce los logits para la clasificación.</p>
+</section>
+<section id="lenet-5">
+<h1><span class="section-number">20. </span>LeNet-5<a class="headerlink" href="#lenet-5" title="Permalink to this heading">#</a></h1>
+<p id="index-6">LeNet-5 es una red neuronal convolucional de 7 niveles desarrollada por Yann LeCun en 1998 para reconocer dígitos escritos a mano en imágenes de 28x28 píxeles. El famoso conjunto de datos MNIST. Ahí empezó todo (más o menos). En 1989, el propio LeCun utilizó la retropropagación (descenso gradiente encadenado, ¿recuerdas?) para aprender los filtros de
+como hemos comentado antes, en lugar de desarrollarlos manualmente.</p>
+<p>La arquitectura de esta red es la siguiente</p>
+<p><img alt="arquitectura LeNet_5" src="../_images/LeNet_5.PNG" /></p>
+<p>Los bloques convolucionales típicos ya están ahí (hasta cierto punto): convoluciones (capas C), funciones de activación (no mostradas) y submuestreo (capas S). Sin embargo, hay algunas diferencias:</p>
+<ul class="simple">
+<li><p>Entonces, el submuestreo era más complejo que el actual pero la idea general sigue siendo válida.</p></li>
+<li><p>La función de activación, una sigmoidea en aquel momento, se aplicaba después del  submuestreo en lugar de antes, como es habitual hoy en día.</p></li>
+<li><p>las capas F6 y OUTPUT estaban conectadas por algo llamado “conexiones gaussianas”, que también es más compleja que la
+función de activación típica que se utiliza hoy en día</p></li>
+</ul>
+<p>Si adaptamos esa arquitectura a la que hoy en día se suele utilizar, el código de la misma sería el siguiente</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lenet</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+
+<span class="c1"># Featurizer</span>
+<span class="c1"># Block 1: 1@28x28 -&gt; 6@28x28 -&gt; 6@14x14</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;func1&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;S2&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1"># Block 2: 6@14x14 -&gt; 16@10x10 -&gt; 16@5x5</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;func2&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1"># Block 3: 16@5x5 -&gt; 120@1x1</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;func2&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+<span class="c1"># Flattening</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">())</span>
+
+<span class="c1"># Classification</span>
+<span class="c1"># Hidden Layer</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;F6&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">84</span><span class="p">))</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;func3&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+<span class="c1"># Output Layer</span>
+<span class="n">lenet</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;OUTPUT&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">84</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>LeNet-5 utilizó tres bloques convolucionales, aunque el último no tiene un max-pooling porque la convolución ya
+produce un único píxel. En cuanto al número de canales aumentan a medida que disminuye el tamaño de la imagen:</p>
+<ul class="simple">
+<li><p>imagen de entrada: monocanal 28x28 píxeles</p></li>
+<li><p>primer bloque: produce 6 canales de 14x14 píxeles</p></li>
+<li><p>segundo bloque: produce píxeles de 5x5 de 16 canales</p></li>
+<li><p>tercer bloque: produce 120 canales de un solo píxel (1x1)</p></li>
+</ul>
+<p>A continuación, estos 120 valores (o características) se aplanan y se alimentan a una capa oculta típica con 84 unidades. El último paso es, obviamente, la capa de salida, que produce 10 logits que se utilizan para la clasificación
+(de 0 a 9, hay 10 clases).</p>
+</section>
+<section id="clasificacion-multiclase">
+<h1><span class="section-number">21. </span>Clasificación multiclase.<a class="headerlink" href="#clasificacion-multiclase" title="Permalink to this heading">#</a></h1>
+<p>Un problema se considera un problema de clasificación multiclase si  hay más de dos clases. Por lo tanto, vamos a mantenerlo lo más simple posible y construyamos un modelo para clasificar imágenes en tres clases.</p>
+<section id="generacion-de-datos">
+<h2><span class="section-number">21.1. </span>Generación de datos.<a class="headerlink" href="#generacion-de-datos" title="Permalink to this heading">#</a></h2>
+<p>Nuestras imágenes van a tener una línea diagonal o paralela, PERO esta vez haremos una distinción entre una línea diagonal
+inclinada a la derecha, una línea diagonal inclinada a la izquierda y una línea (no importa si es horizontal o vertical).</p>
+<p>Además, generemos más imágenes y más grandes: mil imágenes, cada una de diez por diez píxeles de tamaño.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">plot_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">n_plot</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+    <span class="n">n_rows</span> <span class="o">=</span> <span class="n">n_plot</span> <span class="o">//</span> <span class="mi">10</span> <span class="o">+</span> <span class="p">((</span><span class="n">n_plot</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">n_rows</span><span class="p">))</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">images</span><span class="p">[:</span><span class="n">n_plot</span><span class="p">],</span> <span class="n">targets</span><span class="p">[:</span><span class="n">n_plot</span><span class="p">])):</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="mi">10</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">10</span>    
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;#</span><span class="si">{}</span><span class="s1"> - Label:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">})</span>
+        <span class="c1"># plot filter channel in grayscale</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">label_outer</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plot_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n_plot</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/05a37de4950c2826ef077b9da3021c9436a3cf23685c11fc27a351bc0dec45c9.png" src="../_images/05a37de4950c2826ef077b9da3021c9436a3cf23685c11fc27a351bc0dec45c9.png" />
+</div>
+</div>
+</section>
+<section id="preparacion-de-los-datos">
+<h2><span class="section-number">21.2. </span>Preparación de los datos<a class="headerlink" href="#preparacion-de-los-datos" title="Permalink to this heading">#</a></h2>
+<p>El paso de preparación de datos sería idéntico al que utilizamos en el capítulo 4 si no fuera por un cambio: esta vez no realizaremos el aumento de los datos, y no lo hacemos porque en nuestro problema particular, voltear una imagen es potencialmente arruinar la etiqueta.</p>
+<p>Si tenemos una imagen que contiene una línea diagonal inclinada hacia la derecha (etiquetada como índice de clase nº 1), y la volteamos, la diagonal acabaría inclinada hacia la izquierda. Pero el aumento de datos no cambia las etiquetas, por lo que el resultado es una imagen con una etiqueta incorrecta (índice de clase nº 1, aunque contendría una línea diagonal inclinada a la izquierda).</p>
+<p>Dicho esto, sólo vamos a mantener la escala mín-máx usando la transformada Normalizar . Todo lo demás permanece igual: división conjuntos de datos, muestreador y cargadores de datos.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TransformedTensorDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+        
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Builds tensors from numpy arrays BEFORE split</span>
+<span class="c1"># Modifies the scale of pixel values from [0, 255] to [0, 1]</span>
+<span class="n">x_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">images</span> <span class="o">/</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">y_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
+
+<span class="c1"># Uses index_splitter to generate indices for training and</span>
+<span class="c1"># validation sets</span>
+<span class="n">train_idx</span><span class="p">,</span> <span class="n">val_idx</span> <span class="o">=</span> <span class="n">index_splitter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_tensor</span><span class="p">),</span> <span class="p">[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+<span class="c1"># Uses indices to perform the split</span>
+<span class="n">x_train_tensor</span> <span class="o">=</span> <span class="n">x_tensor</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+<span class="n">y_train_tensor</span> <span class="o">=</span> <span class="n">y_tensor</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span>
+<span class="n">x_val_tensor</span> <span class="o">=</span> <span class="n">x_tensor</span><span class="p">[</span><span class="n">val_idx</span><span class="p">]</span>
+<span class="n">y_val_tensor</span> <span class="o">=</span> <span class="n">y_tensor</span><span class="p">[</span><span class="n">val_idx</span><span class="p">]</span>
+
+<span class="c1"># We&#39;re not doing any data augmentation now</span>
+<span class="n">train_composer</span> <span class="o">=</span> <span class="n">Compose</span><span class="p">([</span><span class="n">Normalize</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">(</span><span class="mf">.5</span><span class="p">,),</span> <span class="n">std</span><span class="o">=</span><span class="p">(</span><span class="mf">.5</span><span class="p">,))])</span>
+<span class="n">val_composer</span> <span class="o">=</span> <span class="n">Compose</span><span class="p">([</span><span class="n">Normalize</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="p">(</span><span class="mf">.5</span><span class="p">,),</span> <span class="n">std</span><span class="o">=</span><span class="p">(</span><span class="mf">.5</span><span class="p">,))])</span>
+
+<span class="c1"># Uses custom dataset to apply composed transforms to each set</span>
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">TransformedTensorDataset</span><span class="p">(</span><span class="n">x_train_tensor</span><span class="p">,</span> <span class="n">y_train_tensor</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">train_composer</span><span class="p">)</span>
+<span class="n">val_dataset</span> <span class="o">=</span> <span class="n">TransformedTensorDataset</span><span class="p">(</span><span class="n">x_val_tensor</span><span class="p">,</span> <span class="n">y_val_tensor</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">val_composer</span><span class="p">)</span>
+
+<span class="c1"># Builds a weighted random sampler to handle imbalanced classes</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">make_balanced_sampler</span><span class="p">(</span><span class="n">y_train_tensor</span><span class="p">)</span>
+
+<span class="c1"># Uses sampler in the training set to get a balanced data loader</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">)</span>
+<span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">val_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="funcion-de-perdida-softmax">
+<h2><span class="section-number">21.3. </span>Función de pérdida. softmax<a class="headerlink" href="#funcion-de-perdida-softmax" title="Permalink to this heading">#</a></h2>
+<p id="index-7">Nuevo problema, y por lo tanto nueva función de  pérdida. Dado que estamos adoptando la clasificación  multiclase ahora, tenemos que utilizar una pérdida diferente. Y, una vez más, todo comienza con nuestro tema “favorito”: logits.</p>
+<p>La función de pérdida que utilizaremos en el caso de una clasificación múltiple es la denominada <em>softmax</em>. La función de pérdida softmax devuelve, para cada clase, la contribución que una clase determinada a la suma de odds ratios.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large
+\begin{array}
+&amp; z &amp; = \text{logit}(p) &amp; = \text{log odds ratio }(p) &amp; = \text{log}\left(\frac{p}{1-p}\right)
+\\
+e^z &amp; = e^{\text{logit}(p)} &amp; = \text{odds ratio }(p) &amp; = \left(\frac{p}{1-p}\right)
+\end{array}
+\end{split}\]</div>
+<p>La función softmax es la siguiente</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\text{softmax}(z_i) = \frac{e^{z_i}}{\sum_{c=0}^{N_c-1}{e^{z_c}}}
+\]</div>
+<p>En la ecuación anterior, C representa el número de clases e i corresponde al índice de una clase concreta. En nuestro ejemplo tenemos tres clases, por lo que nuestro modelo debe producir tres logits (z0, z1, z2). Aplicando softmax a estos logits, obtendríamos:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\text{softmax}(z) = \left[\frac{e^{z_0}}{e^{z_0}+e^{z_1}+e^{z_2}},\frac{e^{z_1}}{e^{z_0}+e^{z_1}+e^{z_2}},\frac{e^{z_2}}{e^{z_0}+e^{z_1}+e^{z_2}}\right]
+\]</div>
+<p>Sencillo, ¿verdad? Veámoslo ahora en código. Suponiendo que nuestro modelo produce este tensor que contiene tres logits:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span> <span class="mf">1.3863</span><span class="p">,</span>  <span class="mf">0.0000</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6931</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Calaculamos la exponencial de los logits para obtener los odds-ratio</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">odds_ratios</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+<span class="n">odds_ratios</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([4.0000, 1.0000, 0.5000])
+</pre></div>
+</div>
+</div>
+</div>
+<p>El tensor resultante nos dice que la primera clase tiene muchas más peso que las otras dos, y la segunda tiene mejores probabilidades que la tercera. Así que tomamos estas probabilidades y las sumamos, y luego calculamos la contribución de cada clase a la suma:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">softmaxed</span> <span class="o">=</span> <span class="n">odds_ratios</span> <span class="o">/</span> <span class="n">odds_ratios</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">softmaxed</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([0.7273, 0.1818, 0.0909])
+</pre></div>
+</div>
+</div>
+</div>
+<p>PyTorch proporciona las implementaciones típicas: funcional (F.softmax) y módulo (nn.Softmax):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nn</span><span class="o">.</span><span class="n">Softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span><span class="n">logits</span><span class="p">),</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(tensor([0.7273, 0.1818, 0.0909]), tensor([0.7273, 0.1818, 0.0909]))
+</pre></div>
+</div>
+</div>
+</div>
+<p>En ambos casos, le pide que indique a qué dimensión debe aplicarse la función softmax. En general, nuestros modelos producirán logits con la forma (número de puntos de datos, número de clases), por lo que la dimensión correcta para aplicar softmax es la última (dim=-1).</p>
+</section>
+<section id="logsoftmax">
+<h2><span class="section-number">21.4. </span>LogSoftmax.<a class="headerlink" href="#logsoftmax" title="Permalink to this heading">#</a></h2>
+<p id="index-8">La función logsoftmax devuelve, el logaritmo de la  función softmax anterior. Pero, en lugar de calcular<br />
+manualmente el logaritmo, PyTorch proporciona <em>F.log_softmax y nn.LogSoftmax</em>.</p>
+<p>Estas funciones son más rápidas y también tienen mejores propiedades numéricas. Pero, supongo que tu pregunta principal en este momento es:¿Por qué tengo que tomar el logaritmo de la softmax?. La razón simple y directa es que la función de pérdida espera log-probabilidades como entrada.</p>
+</section>
+<section id="funcion-de-perdida-negative-log-likelihood">
+<h2><span class="section-number">21.5. </span>Función de pérdida: Negative Log-Likelihood.<a class="headerlink" href="#funcion-de-perdida-negative-log-likelihood" title="Permalink to this heading">#</a></h2>
+<p id="index-9">Como hemos visto, la función <em>softmax</em> devuelve probabilidades, mientras que <em>logsoftmax</em> devuelve log-probabilidades.
+Y esa es la entrada para calcular la función de pérdida Negative Log-Likelihood, o <em>NLLLoss</em> para abreviar. Esta función de pérdida es simplemente una extensión de la pérdida de entropía cruzada binaria (ya vista en un tema anterior) para manejar múltiples clases.</p>
+<p>Recordemos la fórmula de entropía cruzada binaria. Era la siguiente:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\texttt{BCE}(y)={-\frac{1}{(N_{\text{pos}}+N_{\text{neg}})}\Bigg[{\sum_{i=1}^{N_{\text{pos}}}{\text{log}(\text{P}(y_i=1))} + \sum_{i=1}^{N_{\text{neg}}}{\text{log}(1 - \text{P}(y_i=1))}}\Bigg]}
+\]</div>
+<p>En nuestro ejemplo hay tres clases, es decir, nuestras etiquetas (y) podrían ser cero, uno o dos. Por lo tanto, la función de pérdida, como extensión de la fórmula anterior, tendrá este aspecto:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\texttt{NLLLoss}(y)={-\frac{1}{(N_0+N_1+N_2)}\Bigg[{\sum_{i=1}^{N_0}{\text{log}(\text{P}(y_i=0))} + \sum_{i=1}^{N_1}{\text{log}(\text{P}(y_i=1))} + \sum_{i=1}^{N_2}{\text{log}(\text{P}(y_i=2))}}\Bigg]}
+\]</div>
+<p>Finalmente, para un problema general en el que tengamos C clases, la fórmula de la función de pérdida a emplear sería la siguiente:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \texttt{NLLLoss}(y)={-\frac{1}{(N_0+\cdots+N_{C-1})}\sum_{c=0}^{C-1}{\sum_{i=1}^{N_c}{\text{log}(\text{P}(y_i=c))} }}
+\]</div>
+<p>Dado que las log-probabilidades se obtienen aplicando <em>logsoftmax</em>, esta pérdida no hace mucho más que buscar las entradas
+correspondientes a la clase verdadera y sumarlas. Veamos esto en código:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">log_probs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([-0.3185, -1.7048, -2.3979])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Estas son las probabilidades logarítmicas para cada clase que calculamos utilizando logsoftmax para nuestro único punto de datos. Ahora, supongamos que su etiqueta es dos: ¿cuál es la pérdida correspondiente?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">log_probs</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">label</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(2.3979)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como habrás notado, se ha  utilizado la versión funcional de la función de pérdida en el fragmento de código anterior: F.nll_loss. Pero, como hemos hecho con la pérdida de entropía cruzada binaria en el capítulo 3, es más probable que se utilice la versión del módulo: <em>nn.NLLLoss</em>.</p>
+<p>Al igual que antes, esta función de pérdida es una función de orden superior, y puede tomar tres argumentos opcionales (los otros son obsoletos y puede ignorarlos):</p>
+<ul class="simple">
+<li><p><em>reduction</em>. Toma media como posibles valores: sum, mean o none. El valor por defecto, mean, corresponde a la ecuación  anterior. Como era de esperar, sum devuelve la suma de los errores, en lugar de la media. La última opción  none, corresponde a la forma no reducida, es decir, que devuelve la matriz completa de errores.</p></li>
+<li><p><em>weight</em>. Toma un tensor de longitud C, es decir, que contiene tantos pesos como clases.</p></li>
+<li><p><em>ignore_index</em>: toma un entero, correspondiente al único índice de clase que debe ignorarse al calcular la función de pérdida. Puede utilizarse para enmascarar una etiqueta concreta que no es relevante para la tarea de clasificación.</p></li>
+</ul>
+<p>Veamos algunos ejemplos rápidos utilizando los argumentos anteriores. En primer lugar, tenemos que generar algunos logits ficticios (aunque seguiremos utilizando tres clases), y las correspondientes log-probabilidades:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">dummy_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">dummy_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">dummy_log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dummy_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Los logits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dummy_logits</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------&quot;</span><span class="p">)</span>
+<span class="n">dummy_log_probs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Los logits
+tensor([[ 0.7376,  1.9459, -0.6995],
+        [-1.3023, -0.5133, -0.2696],
+        [ 0.2462,  0.4839,  0.4504],
+        [-0.9568,  1.5012, -0.3136],
+        [-0.2343, -1.0713,  0.1648]])
+----------
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([[-1.5229, -0.3146, -2.9600],
+        [-1.7934, -1.0044, -0.7607],
+        [-1.2513, -1.0136, -1.0471],
+        [-2.6799, -0.2219, -2.0367],
+        [-1.0728, -1.9098, -0.6737]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como las clases observadas son [0,0,1,2,1], al aplicar la fórmula de la función de pérdida, se elegira en la primera fila el valor -1.5229, en la segunda -1.7934, en la tercera -1.0136 (al de la clase 1) y así sucesivamente.</p>
+<p>Es decir de una forma manual se puede calcular el valor de la función de pérdida:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">relevant_log_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">1.5229</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.7934</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0136</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0367</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.9098</span><span class="p">])</span>
+<span class="o">-</span><span class="n">relevant_log_probs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(1.6553)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Ahora vamos a utilizar <em>nn.NLLLoss</em> para crear la función de pérdida que nos ofrece PyTorch, y luego utilizar las predicciones y etiquetas para comprobar si tenemos las logprobabilidades relevantes elegidas anteriormente correctas:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">()</span>
+<span class="n">loss_fn</span><span class="p">(</span><span class="n">dummy_log_probs</span><span class="p">,</span> <span class="n">dummy_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(1.6553)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como vemos hemos obtenido el mismo valor. ¿Y si queremos equilibrar nuestro conjunto de datos, dando a los puntos  de datos con etiqueta (y=2) el doble de peso que a las otras clases?. Lo haremos de la siguiente forma</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]))</span>
+<span class="n">loss_fn</span><span class="p">(</span><span class="n">dummy_log_probs</span><span class="p">,</span> <span class="n">dummy_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(1.7188)
+</pre></div>
+</div>
+</div>
+</div>
+<p>¿Y si simplemente queremos ignorar los puntos de datos con la etiqueta (y=2)?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">loss_fn</span><span class="p">(</span><span class="n">dummy_log_probs</span><span class="p">,</span> <span class="n">dummy_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(1.5599)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Y, una vez más, hay otra función de pérdida disponible para clasificación multiclase. Y, una vez más, es muy importante saber cuándo usar una u otra, para no acabar con una combinación inconsistente de modelo y función de pérdida.</p>
+</section>
+<section id="funcion-de-perdida-cross-entropy">
+<h2><span class="section-number">21.6. </span>Función de pérdida: Cross-Entropy<a class="headerlink" href="#funcion-de-perdida-cross-entropy" title="Permalink to this heading">#</a></h2>
+<p id="index-10">La función de pérdida del apartado anterior tomaba como argumento las probabilidades logarítmicas (junto con las etiquetas, obviamente). Sin embargo esta función tarabaja con los Logits. Es la versión multiclase de <em>nn.BCEConLogitsPérdida</em>, ya vista en un tema anterior.</p>
+<p>En términos prácticos, esto significa que <strong>NO</strong> debe añadir un <em>logsoftmax</em> como la última capa de su modelo cuando utilice esta función de pérdida. Esta función de pérdida combina la capa logsoftmax y la anterior pérdida de log-verosimilitud negativa en una sola.</p>
+<p>Por lo tanto en la clasificación multiclase se tienen las dos alternativas siguientes:</p>
+<p>1.- Se tiene <em>nn.LogSoftmax</em> como última capa, lo que significa que su modelo está produciendo logprobabilidades,
+se debe combinar con la función nn.NLLLoss</p>
+<p>2.- No se coloca logsoftmax en la última capa, lo que significa que su modelo está produciendo logits, y por lo tanto se debe combinar con la función nn.CrossEntropyLoss.</p>
+<p>La función de pérdida <em>nn.CrossEntropyLoss</em> toma los mismos argumentos que nn.NLLLoss:</p>
+<ul class="simple">
+<li><p><em>reduction</em>. Toma media como posibles valores: sum, mean o none. El valor por defecto, mean, corresponde a la ecuación  anterior. Como era de esperar, sum devuelve la suma de los errores, en lugar de la media. La última opción  none, corresponde a la forma no reducida, es decir, que devuelve la matriz completa de errores.</p></li>
+<li><p><em>weight</em>. Toma un tensor de longitud C, es decir, que contiene tantos pesos como clases.</p></li>
+<li><p><em>ignore_index</em>: toma un entero, correspondiente al único índice de clase que debe ignorarse al calcular la función de pérdida. Puede utilizarse para enmascarar una etiqueta concreta que no es relevante para la tarea de clasificación.</p></li>
+</ul>
+<p>Veamos un ejemplo de su uso utilizando los datos que se ha generado para la función nn.NLLLoss</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">dummy_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">dummy_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">loss_fn</span><span class="p">(</span><span class="n">dummy_logits</span><span class="p">,</span> <span class="n">dummy_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(1.6553)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como es de esperar obtenemos el mismo resultado que con nn.NLLLoss.</p>
+<p>Para intentar y aclarar todos estos procesos, a continuación se muestra una tabla que pretende resumir y aclarar el procedimiento a utilizar en cada caso.</p>
+<p><img alt="cuadro utilidad" src="../_images/tabla1.PNG" /></p>
+</section>
+</section>
+<section id="configuracion-del-modelo">
+<h1><span class="section-number">22. </span>Configuración del modelo<a class="headerlink" href="#configuracion-del-modelo" title="Permalink to this heading">#</a></h1>
+<p>Vamos a construir nuestra primera red neuronal convolucional de verdad. Podemos utilizar el típico bloque convolucional: capa convolucional, función de activación, capa de agrupamiento o pooling. Nuestras imágenes son bastante pequeñas, así que
+sólo necesitamos uno de ellos.</p>
+<p>Todavía tenemos que decidir cuántos canales de nuestra capa convolucional va a producir. En general, el número de canales aumenta con cada bloque convolucional. Por simplicidad (y posterior visualización), vamos a mantener un solo canal.</p>
+<p>También tenemos que decidir el tamaño del núcleo (el campo receptivo o las regiones grises en las figuras al principio de este capítulo).. Sigamos con un tamaño de núcleo de tres, lo que reducirá el tamaño de la imagen en dos píxeles en cada dimensión (aquí no utilizamos relleno).</p>
+<p>El código sería el siguiente</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">model_cnn1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+
+<span class="c1"># Featurizer</span>
+<span class="c1"># Block 1: 1@10x10 -&gt; n_channels@8x8 -&gt; n_channels@4x4</span>
+<span class="n">n_channels</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;conv1&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">n_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;relu1&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;maxp1&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1"># Flattening: n_channels * 4 * 4</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Se ha puesto el número de canales como una variable, con la finalidad de que se puedan probar diferentes valores si así se desea.</p>
+<p>Veamos lo que ocurre con una imagen de entrada (monocanal, 10x10 píxeles - 1&#64;10x10):</p>
+<ul class="simple">
+<li><p>La imagen se convoluciona con el núcleo y la imagen resultante tiene un canal, y su tamaño es de 8x8 píxeles (1&#64;8x8).</p></li>
+<li><p>Se aplica una función de activación ReLU a la imagen resultante.</p></li>
+<li><p>La imagen “activada” (es decir salida de la función de activación) se somete a una operación de max-pooling con un
+tamaño de núcleo de dos, por lo que se divide en 16 trozos de tamaño dos por dos, lo que da como resultado una imagen con un canal, pero de 4x4 píxeles de tamaño (1&#64;4x4)</p></li>
+<li><p>estos 16 valores pueden considerarse features, y se aplanan en un tensor de 16 elementos</p></li>
+</ul>
+<p>La siguiente parte de nuestro modelo, el clasificador, utiliza estas características para alimentar lo que sería una simple red neuronal con una sola capa oculta si se considerara por sí sola:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Classification</span>
+<span class="c1"># Hidden Layer</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;fc1&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="n">n_channels</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;relu2&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+<span class="c1"># Output Layer</span>
+<span class="n">model_cnn1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;fc2&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Hay una capa oculta que toma las 16 características como entradas y las mapea en un espacio de 10 dimensiones que va a ser
+“activado” por el ReLU.</p>
+<p>A continuación, la capa de salida produce tres combinaciones lineales distintas de diez valores de activación.Cada combinación corresponde a una clase diferente. La figura siguiente, representa la la segunda mitad del modelo:</p>
+<p><img alt="Segunda parte del modelo" src="../_images/ModeloLineal.PNG" /></p>
+<p>Debemos tener presente que al producir nuestro modelo como resultado final logits entonces debemos utilizar la función de pérdida  nn.CrossEntropyLoss.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="c1"># definición de la función de pérdida</span>
+<span class="n">multi_loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># Implementamos el optimizador</span>
+<span class="n">optimizer_cnn1</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model_cnn1</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Con todo esto ya podemos entrenar el modelo</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sbs_cnn1</span> <span class="o">=</span> <span class="n">StepByStep</span><span class="p">(</span><span class="n">model_cnn1</span><span class="p">,</span> <span class="n">multi_loss_fn</span><span class="p">,</span> <span class="n">optimizer_cnn1</span><span class="p">)</span>
+<span class="n">sbs_cnn1</span><span class="o">.</span><span class="n">set_loaders</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Lo entrenamos con 20 epochs y visualizamos las funciones de pérdida</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sbs_cnn1</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">sbs_cnn1</span><span class="o">.</span><span class="n">plot_losses</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1a049a8b7faf51a225e443b270a9ab34f789e976b6ef0642d68436619cf02b07.png" src="../_images/1a049a8b7faf51a225e443b270a9ab34f789e976b6ef0642d68436619cf02b07.png" />
+</div>
+</div>
+</section>
+<section id="visualizando-los-filtros">
+<h1><span class="section-number">23. </span>Visualizando los filtros<a class="headerlink" href="#visualizando-los-filtros" title="Permalink to this heading">#</a></h1>
+<p>En el capítulo 4 hablamos brevemente de la visualización de pesos como píxeles. Vamos a profundizar en la visualización de filtros (pesos), así como las imágenes transformadas producidas por cada una de nuestras capas de nuestro modelo.</p>
+<p>En primer lugar añadimos un nuevo método a nuestra clase StepByStep.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">_visualize_tensors</span><span class="p">(</span><span class="n">axs</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yhat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                       <span class="n">layer_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># The number of images is the number of subplots in a row</span>
+    <span class="n">n_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axs</span><span class="p">)</span>
+    <span class="c1"># Gets max and min values for scaling the grayscale</span>
+    <span class="n">minv</span><span class="p">,</span> <span class="n">maxv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="n">n_images</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="n">n_images</span><span class="p">])</span>
+    <span class="c1"># For each image</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="n">n_images</span><span class="p">]):</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="c1"># Sets title, labels, and removes ticks</span>
+        <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1"> #</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">shp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">x</span><span class="si">{</span><span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">40</span>
+        <span class="p">)</span>
+        <span class="n">xlabel1</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Label: </span><span class="si">{</span><span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">xlabel2</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">yhat</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Predicted: </span><span class="si">{</span><span class="n">yhat</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">xlabel</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xlabel1</span><span class="si">}{</span><span class="n">xlabel2</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xlabel</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+        <span class="c1"># Plots weight as an image</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()),</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> 
+            <span class="n">vmin</span><span class="o">=</span><span class="n">minv</span><span class="p">,</span> 
+            <span class="n">vmax</span><span class="o">=</span><span class="n">maxv</span>
+        <span class="p">)</span>
+    <span class="k">return</span>
+
+<span class="nb">setattr</span><span class="p">(</span><span class="n">StepByStep</span><span class="p">,</span> <span class="s1">&#39;_visualize_tensors&#39;</span><span class="p">,</span> <span class="n">_visualize_tensors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La mayor parte del cuerpo de la función es el manejo de los títulos, etiquetas, y los ticks de los ejes
+antes de usar imshow para trazar la imagen, así que no es tan interesante.Explicamos sus argumentos:</p>
+<ul class="simple">
+<li><p><em>axs</em>: una matriz de subplots, correspondiente a una fila de subplots tal y como lo devuelve el subplot de Matplotlib.</p></li>
+<li><p><em>x</em>: una matriz de tio Numpy array  que contenga al menos tantas imágenes/filtros como subplots en <em>axs</em>.</p></li>
+<li><p><em>y</em>: argumento opcional, es un numpy array  que contiene al menos tantas etiquetas como subplots en <em>axs</em>.</p></li>
+<li><p><em>yhat</em>. argumento opcional, es un numpy array que contiene al menos tantas etiquetas predichas como subplots en <em>axs</em>.</p></li>
+<li><p><em>layer_name</em>.: etiqueta para la fila de subplots.</p></li>
+<li><p><em>title</em>: Prefijo del título para cada subplot</p></li>
+</ul>
+<p>Observemos que el método anterior tiene el decorador <em>&#64;staticmethod</em>, lo que indica que <a href="https://ellibrodepython.com/metodos-estaticos-clase-python"  target="_blank"> es un método estático </a>, y como tal no tiene un argumento self.  El funcionamiento interno de la función debe ser independiente de la instancia de la clase a la que pertenece. El método estático puede ejecutarse desde la propia clase en lugar de desde una de sus instancias. Esto lo vemos en el siguiente ejemplo</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">meow</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Meow&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cat</span><span class="o">.</span><span class="n">meow</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Meow
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualizando-filtros">
+<h1><span class="section-number">24. </span>Visualizando filtros.<a class="headerlink" href="#visualizando-filtros" title="Permalink to this heading">#</a></h1>
+<p>Podríamos aplicar el mismo principio a los pesos del filtro aprendido por nuestra capa convolucional. Podemos acceder a los pesos de cualquier capa utilizando la notación de puntos:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights_filter</span> <span class="o">=</span> <span class="n">model_cnn1</span><span class="o">.</span><span class="n">conv1</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="n">weights_filter</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1, 1, 3, 3)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Las dimensiones (shape) de los pesos (que representan los filtros) de una capa bidimensional viene dada por (canales_salida, in_channels, kernel_size, kernel_size). En nuestro caso, el tamaño del kernel es tres, y tenemos un único canal, tanto de entrada como de salida, por lo que la shape de los pesos es (1, 1, 3, 3).</p>
+<p>Y aquí es cuando el método estático que desarrollamos en la sección anterior entra en escena: podemos recorrer en bucle los filtros (canales de de salida) que el modelo aprendió para convolucionar cada uno de los de entrada.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualize_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Gets the layer object from the model</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">layer_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+            <span class="n">layer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="c1"># We are only looking at filters for 2D convolutions</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
+            <span class="c1"># Takes the weight information</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="c1"># weights -&gt; (channels_out (filter), channels_in, H, W)</span>
+            <span class="n">n_filters</span><span class="p">,</span> <span class="n">n_channels</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="c1"># Builds a figure</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_channels</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_filters</span><span class="p">)</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">n_filters</span><span class="p">,</span> <span class="n">n_channels</span><span class="p">,</span> 
+                                     <span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_filters</span><span class="p">,</span> <span class="n">n_channels</span><span class="p">)</span>
+            <span class="c1"># For each channel_out (filter)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_filters</span><span class="p">):</span>    
+                <span class="n">StepByStep</span><span class="o">.</span><span class="n">_visualize_tensors</span><span class="p">(</span>
+                    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span>
+                    <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">layer_name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Filter #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> 
+                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Channel&#39;</span>
+                <span class="p">)</span>
+                    
+            <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">label_outer</span><span class="p">()</span>
+
+            <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">fig</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span>
+    
+<span class="nb">setattr</span><span class="p">(</span><span class="n">StepByStep</span><span class="p">,</span> <span class="s1">&#39;visualize_filters&#39;</span><span class="p">,</span> <span class="n">visualize_filters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Bien con todo lo anterior, podremos ver cómo queda el filtro:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">sbs_cnn1</span><span class="o">.</span><span class="n">visualize_filters</span><span class="p">(</span><span class="s1">&#39;conv1&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/19cf855e402d94ec0cc7a4febf17b7813a22f5e586cb636f196f1b5ba822e2e2.png" src="../_images/19cf855e402d94ec0cc7a4febf17b7813a22f5e586cb636f196f1b5ba822e2e2.png" />
+</div>
+</div>
+<p>Sólo con mirar este filtro, no es fácil comprender lo que está logrando efectivamente. Para comprender realmente el efecto que tiene este filtro en cada imagen, necesitamos visualizar los valores intermedios producidos por nuestro modelo, es decir, la salida de todas y cada una de las capas.</p>
+<p>Para poder visualizar la salida de cada capa necesitamos poner en escena el concepto de <strong>hooks</strong>.</p>
+</section>
+<section id="hooks">
+<h1><span class="section-number">25. </span>Hooks<a class="headerlink" href="#hooks" title="Permalink to this heading">#</a></h1>
+<p id="index-11">Un <em>Hooks</em> (o gancho ) es simplemente una forma de forzar a un modelo a ejecutar una función ya sea después de su paso hacia adelante (step forward) o hacia atrás (step backward). Por lo tanto, existen ganchos hacia adelante y hacia atrás. Estamos utilizando sólo hacia adelante pero la idea es la misma para ambos.</p>
+<p>Para ver y entender cómo se crean estas funciones, vamos a montar a continuación una que sirva de ejemplo. Será una función de tipo hook para un step forward.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">dummy_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">dummy_hook</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
+    <span class="n">dummy_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">layer</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Las funciones de tipo hook (forward) tienen tres argumentos:</p>
+<ul class="simple">
+<li><p>Un modelo (layer en la función anterior).</p></li>
+<li><p>Un tensor representando los inputs que toma el modelo o capa.</p></li>
+<li><p>Un tensor representando los outputs generados por el modelo o capa.</p></li>
+</ul>
+<p>Por lo tanto, cualquier función que tome tres argumentos, independientemente de sus nombres, puede funcionar como gancho o hook. En nuestro caso (y en muchos otros casos también), nos gustaría tener la información que pasa por la función hook. Esa es la misión de la variable <em>dummy_list</em> en el fragmento anterior. Nuestra función dummy_hook es de lo más básica: simplemente añade una tupla de sus tres argumentos a la variable dummy_list definida fuera de la función hook.</p>
+<p>Entonces definiendo la función hook de ese modo, ¿cómo asociarla o engancharla al modelo?. Pues bien, para hacer esto existe el método <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.register_forward_hook" target="_blank"> register_forward_hook </a>, la cual toma como argumento una función de tipo hook y devuelve un <strong>handle</strong>,para que podamos realizar un seguimiento de los hooks conectados a nuestro modelo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_handle</span> <span class="o">=</span> <span class="n">dummy_model</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">dummy_hook</span><span class="p">)</span>
+<span class="n">dummy_handle</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;torch.utils.hooks.RemovableHandle at 0x1d885404d30&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Pongamos esto en funcionamiento</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># generamos un tensor</span>
+<span class="n">dummy_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.3</span><span class="p">])</span>
+<span class="c1"># damos un paso hacia adelante</span>
+<span class="n">dummy_model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">dummy_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([-0.8366], grad_fn=&lt;AddBackward0&gt;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Esto debería añadir una nueva tupla a la lista ficticia, que contenga una capa lineal, un tensor de entrada (0,3) y un tensor de salida (-0,7514).Por cierto, al ejecutar varias veces este código los valores obtenidos van a ser diferentes a los aquí obtenidos, ya que no nos molestamos en usar una semilla aquí. Veamos pues el contenido de la lista dummy</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_list</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Vemos que nuestra lista está vacía, porque debemos recordar y destacar lo siguiente:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>¡NO se debe llamar al método forward(x)!. Se debe llamar al modelo completo con el comando <em>model(x)</em> para realizar un forward pass.</p>
+<p>De lo contrario, los hooks no funcionarán.</p>
+</div>
+<p>Hagamos pues esto:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_model</span><span class="p">(</span><span class="n">dummy_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([-0.8366], grad_fn=&lt;AddBackward0&gt;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_list</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(Linear(in_features=1, out_features=1, bias=True),
+  (tensor([0.3000]),),
+  tensor([-0.8366], grad_fn=&lt;AddBackward0&gt;))]
+</pre></div>
+</div>
+</div>
+</div>
+<p>¡Ahora sí! Aquí está la tupla que esperábamos. Si vuelves a llamar al modelo una vez más, añadirá otra tupla a la lista,
+y así sucesivamente. Este gancho va a ser enganchado a nuestro modelo hasta que se elimine explícitamente. Para eliminar un gancho, basta con llamar a su método remove:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_handle</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Y el gancho se va. Pero no perdimos la información ya que nuestra variable, <em>dummy_list</em> estaba definida fuera de la función hook.</p>
+<p>Fíjate en el primer elemento de la tupla: es una instancia de un modelo (o capa). Incluso si usamos un modelo secuencial y nombramos las capas, los nombres no llegarán a la función hook. Así que tenemos que  hacer la asociación nosotros mismos.</p>
+<p id="index-12">Volvamos ahora a nuestro modelo real con el que estábamos trabajando. Podemos obtener una lista de todos sus
+módulos con nombre utilizando el método apropiado:<a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" target="_blank"> named_modules </a>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">modules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sbs_cnn1</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">())</span>
+<span class="n">modules</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(&#39;&#39;,
+  Sequential(
+    (conv1): Conv2d(1, 1, kernel_size=(3, 3), stride=(1, 1))
+    (relu1): ReLU()
+    (maxp1): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (flatten): Flatten(start_dim=1, end_dim=-1)
+    (fc1): Linear(in_features=16, out_features=10, bias=True)
+    (relu2): ReLU()
+    (fc2): Linear(in_features=10, out_features=3, bias=True)
+  )),
+ (&#39;conv1&#39;, Conv2d(1, 1, kernel_size=(3, 3), stride=(1, 1))),
+ (&#39;relu1&#39;, ReLU()),
+ (&#39;maxp1&#39;,
+  MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)),
+ (&#39;flatten&#39;, Flatten(start_dim=1, end_dim=-1)),
+ (&#39;fc1&#39;, Linear(in_features=16, out_features=10, bias=True)),
+ (&#39;relu2&#39;, ReLU()),
+ (&#39;fc2&#39;, Linear(in_features=10, out_features=3, bias=True))]
+</pre></div>
+</div>
+</div>
+</div>
+<p>El primer módulo, sin nombre, es el modelo completo. Los otros módulos son sus capas. Y esas capas son una de las entradas de la función hook. Por lo tanto, tenemos que ser capaces de buscar el nombre, dada la instancia de la capa correspondiente. Veamos la forma de hacerlo (mediante un diccinario comprehension​ de Python):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">layer_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">[</span><span class="mi">1</span><span class="p">:]}</span>
+<span class="n">layer_names</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{Conv2d(1, 1, kernel_size=(3, 3), stride=(1, 1)): &#39;conv1&#39;,
+ ReLU(): &#39;relu1&#39;,
+ MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False): &#39;maxp1&#39;,
+ Flatten(start_dim=1, end_dim=-1): &#39;flatten&#39;,
+ Linear(in_features=16, out_features=10, bias=True): &#39;fc1&#39;,
+ ReLU(): &#39;relu2&#39;,
+ Linear(in_features=10, out_features=3, bias=True): &#39;fc2&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Un diccionario es perfecto para eso: la función hook tomará la capa y buscará su nombre en el diccionario. Entonces con todo esto, vamos a generar nuestra función hook</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">visualization</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">def</span> <span class="nf">hook_fn</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">layer_names</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+    <span class="n">visualization</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>En realidad es bastante sencillo: busca el nombre de la capa y lo utiliza como clave de un diccionario definido fuera de la función hook, que almacenará las salidas producidas por la capa enganchada. Los inputs son ignorados en esta función.</p>
+<p>Podemos hacer una lista de las capas de las que nos gustaría obtener las salidas, hacer un bucle en modules y para cada nombre y capa del mismo pasarlo a un diccionario denominado handles:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">layers_to_hook</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;conv1&#39;</span><span class="p">,</span> <span class="s1">&#39;relu1&#39;</span><span class="p">,</span> <span class="s1">&#39;maxp1&#39;</span><span class="p">,</span> <span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="s1">&#39;fc1&#39;</span><span class="p">,</span> <span class="s1">&#39;relu2&#39;</span><span class="p">,</span> <span class="s1">&#39;fc2&#39;</span><span class="p">]</span>
+
+<span class="n">handles</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">layers_to_hook</span><span class="p">:</span>
+        <span class="n">handles</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">hook_fn</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Ya está todo en su sitio. Lo único que queda por hacer es llamar al modelo, de modo que se active un pase hacia adelante,
+y las salidas de todas estas capas se almacenan en el diccionario de visualización.</p>
+<p>Obtengamos un mini lote del cargador de validación y utilicemos el método <em>predict</em> de nuestra clase StepByStep (que llamará al modelo modelo entrenado):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">images_batch</span><span class="p">,</span> <span class="n">labels_batch</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="c1">#images_batch, labels_batch = enumerate(enumerate(val_loader))</span>
+<span class="c1">#logits = sbs_cnn1.predict(images_batch)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="nn">Input In [137],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">images_batch</span><span class="p">,</span> <span class="n">labels_batch</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+<span class="ne">AttributeError</span>: &#39;_SingleProcessDataLoaderIter&#39; object has no attribute &#39;next&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">enumerate</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;enumerate at 0x1d8853e36c0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>torch.utils.data.dataloader.DataLoader
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">val_loader</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;torch.utils.data.dataloader.DataLoader at 0x1d8872080a0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">val_loader</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>torch.utils.data.dataloader._SingleProcessDataLoaderIter
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<!-- Lo dejo en página 539. Pero el error que me da debe ser por la versión de Pytorch que tengo. --></section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./jupyters"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Capitulo4bisEspacioFeatures.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">12. </span>Introducción al espacio de las Features</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Tema11_NLP.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">26. </span>Introducción NLP con Pytorch</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">13. Introducción a las convoluciones.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#convoluciones">14. Convoluciones.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#filtro-kernel">15. Filtro / Kernel</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#moviendo-la-ventana-o-kernel">15.1. Moviendo la ventana o kernel</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#convolucion-en-pytorch">16. Convolución en PyTorch</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#padding">17. Padding.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pooling">18. Pooling</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#aplanamiento-o-flattening">19. Aplanamiento o Flattening</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#lenet-5">20. LeNet-5</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#clasificacion-multiclase">21. Clasificación multiclase.</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generacion-de-datos">21.1. Generación de datos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparacion-de-los-datos">21.2. Preparación de los datos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcion-de-perdida-softmax">21.3. Función de pérdida. softmax</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logsoftmax">21.4. LogSoftmax.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcion-de-perdida-negative-log-likelihood">21.5. Función de pérdida: Negative Log-Likelihood.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcion-de-perdida-cross-entropy">21.6. Función de pérdida: Cross-Entropy</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-del-modelo">22. Configuración del modelo</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizando-los-filtros">23. Visualizando los filtros</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizando-filtros">24. Visualizando filtros.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#hooks">25. Hooks</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Francisco Rodríguez
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

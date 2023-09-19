@@ -1,0 +1,1506 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>7. Introducción problemas de clasificación. &#8212; Trabajando con PyTorch</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'jupyters/Tema_3_clasificacion';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8. Introducción clasificación de imágenes." href="capitulo4_clasificacionImagenes.html" />
+    <link rel="prev" title="6. Tema 2" href="Tema%202.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../introduccion.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Trabajando con PyTorch</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../introduccion.html">
+                    Introducción
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Pycharm</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="OperacionesTensores.html">1. Los tensores en PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Calcularderivadas.html">2. Introducción a PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OptimizadoresPyTorch.html">3. Optimizadores en PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tema1regresionlineal.html">4. Regresión lineal.</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Tema%202.html">6. Regresión lineal. Continuación</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">7. Problemas de clasificación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capitulo4_clasificacionImagenes.html">8. Introducción clasificación de imágenes.</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="ModelosPreentrenados.html">11. TorchVision-Modelos preentrenados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Capitulo4bisEspacioFeatures.html">12. Espacio Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Capitulo5Convoluciones.html">13. Introducción a las convoluciones.</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Tema11_NLP.html">26. Lenguaje natural</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Apéndice</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Apendice.html">27. Apéndice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Índice de términos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">28. Índice de términos</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/jupyters/Tema_3_clasificacion.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Introducción problemas de clasificación.</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generacion-de-los-datos">7.1. Generación de los datos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparacion-de-los-datos">7.2. Preparación de los datos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-modelo">7.3. El modelo.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-funcion-de-perdida">7.4. La función de pérdida.</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#la-funcion-de-perdida-bcewithlogitsloss">7.4.1. La función de pérdida BCEWithLogitsLoss</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datos-no-balanceados">7.5. Datos no balanceados.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-del-modelo">7.6. Configuración del modelo.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#entrenamiento-del-modelo">7.7. Entrenamiento del modelo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-boundary">7.8. Decisión Boundary.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#razon-de-true-y-false-positivos">7.9. Razón de True y False positivos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#precision-y-recall">7.10. Precision y Recall.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acuracidad">7.11. Acuracidad.</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="introduccion-problemas-de-clasificacion">
+<h1><span class="section-number">7. </span>Introducción problemas de clasificación.<a class="headerlink" href="#introduccion-problemas-de-clasificacion" title="Permalink to this heading">#</a></h1>
+<p>En el tema anterior hemos visto cómo poder utilizar Pytorch para poder resolver problemas de regresión donde la variable de respuesta es una variable de tipo continuo que puede tomar una infinidad de valores. Lógicamente este modelo no nos sirve cuando estamos en presencia de un modelo de clasificación ya que en estos casos, la variable dependiente va a tomar dos valores (clasificación binaria) o bien un escaso numero de valores.</p>
+<p>Lo primero que haremos será cargar las librerías que van a ser necesarias para el desarrollo de este capítulo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">TensorDataset</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_moons</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">roc_curve</span><span class="p">,</span> \
+<span class="n">precision_recall_curve</span><span class="p">,</span> <span class="n">auc</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">stepbystep.v0</span> <span class="kn">import</span> <span class="n">StepByStep</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Para desarrollar este trabajo vamos a suponer que la variables dependiente puede tomar sólo dos valores, o lo que es lo mismos, tiene dos clases:rojo o azul. Vamos a cambiar estos valores, de tal manera que al rojo le reasignamos el valor de 0 y al azul el valor de 1. Los valores cero diremos que son de la clase negativa y los valores de 1 de la clase positiva.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>En un modelo de clasificación binaria, lo que vamos a obtener es la probabilidad de pertenecer a la clase positiva, es decir, en este ejemplo de predecir que se trata de la clase azul.</p>
+</div>
+<section id="generacion-de-los-datos">
+<h2><span class="section-number">7.1. </span>Generación de los datos.<a class="headerlink" href="#generacion-de-los-datos" title="Permalink to this heading">#</a></h2>
+<p>En este caso vamos a avanzar un poco en relación con las features con las que vamos a trabajar y suponemos que en este caso son dos features o variables independientes que vamos a designar por x1 y x2. Además nos vamos a valer de la clase de scikit-learn <em>make_moons</em> para generar un total de 100 puntos. Además de esto vamos a añadir un ruido gaussino. Lo hacemos con la siguiente instrucción.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_moons</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>A continuación vamos a ver que X es un numpy array de dimensión 100x2 e y es otro arra de dimensión 100x1</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;X es un objeto de tipo: &quot;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La dimensión de X es: &quot;</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>X es un objeto de tipo:  &lt;class &#39;numpy.ndarray&#39;&gt;
+La dimensión de X es:  (100, 2)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;y es un objeto de tipo: &quot;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La dimensión de y es: &quot;</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>y es un objeto de tipo:  &lt;class &#39;numpy.ndarray&#39;&gt;
+La dimensión de y es:  (100,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Generamos los datos de entrenamiento y de test utilizando la siguiente instrucción de scikit-learn</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_val</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+<span class="n">X</span><span class="p">,</span>
+<span class="n">y</span><span class="p">,</span>
+<span class="n">test_size</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span>
+<span class="n">random_state</span><span class="o">=</span><span class="mi">13</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Además en los problemas de redes neuronales, conviene estandarizar las features, esto lo hacemos apoyándonos en scikit-learn.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_val</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">ListedColormap</span>
+
+<span class="k">def</span> <span class="nf">figure1</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">,</span> <span class="n">cm_bright</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">cm_bright</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cm_bright</span> <span class="o">=</span> <span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span> <span class="s1">&#39;#0000FF&#39;</span><span class="p">])</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_train</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm_bright</span><span class="p">)</span><span class="c1">#, edgecolors=&#39;k&#39;)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$X_1$&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$X_2$&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Generated Data - Train&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_val</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_val</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">y_val</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm_bright</span><span class="p">)</span><span class="c1">#, edgecolors=&#39;k&#39;)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$X_1$&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$X_2$&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Generated Data - Validation&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">figure1</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/9967d87007c70b8215f6625dd6ae499a1f67038e2c40e2fd7fe77d0ca8e68ae6.png" src="../_images/9967d87007c70b8215f6625dd6ae499a1f67038e2c40e2fd7fe77d0ca8e68ae6.png" />
+</div>
+</div>
+</section>
+<section id="preparacion-de-los-datos">
+<h2><span class="section-number">7.2. </span>Preparación de los datos.<a class="headerlink" href="#preparacion-de-los-datos" title="Permalink to this heading">#</a></h2>
+<p>Vamos a proceder a preparar los datos de una forma muy similar a como lo hemos hecho para el análisis de regresión.</p>
+<p>Antes de seguir adelante conviene subrayar el formato de los datos con los que vamos a trabajar. En concreto X_train y X_val son matrices de dimensiones (?,2),(donde el signo ? indica el número de filas que tiene) pero no ocurre así con la variables que nos indica la clasificación. En efecto, veamoslo para y_train</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_train</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(80,)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como podemos ver es un vector fila, pero lo tenemos que pasar a vector columna (como con y_val). Esto lo hacemos con el método .reshape(-1,1). Observar esto en el código que implementamos a continuación.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+
+<span class="c1"># Builds tensors from numpy arrays</span>
+<span class="n">x_train_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="c1"># ¡¡¡ OJO con este reshape que tenemos que hacer !!!!!!!!!!</span>
+<span class="n">y_train_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+<span class="n">x_val_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">y_val_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">y_val</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+<span class="c1"># Builds dataset containing ALL data points</span>
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">x_train_tensor</span><span class="p">,</span> <span class="n">y_train_tensor</span><span class="p">)</span>
+<span class="n">val_dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">x_val_tensor</span><span class="p">,</span> <span class="n">y_val_tensor</span><span class="p">)</span>
+
+<span class="c1"># Builds a loader of each set</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">val_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="el-modelo">
+<h2><span class="section-number">7.3. </span>El modelo.<a class="headerlink" href="#el-modelo" title="Permalink to this heading">#</a></h2>
+<p>Vamos a explicar en este apartado en qué consiste el modelo de regresión logit, para ello vamos a partir de un modelo de regresión que ya todos conocemos.</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+y = b + w_1x_1 + w_2x_2 + \epsilon
+\]</div>
+<p>Lo primero que debemos de tener en cuenta con este modelo es que no nos sirve para resolver el problema que tenemos, ya que la variable según este modelo puede tener una infinidad de valores, pero sin embargo en nuestro caso sólo tiene los valores cero o uno, en consecuencia debemos reformularlo para poderlo utilizar en este problema.</p>
+<p>Entonces la reformulación que podemos hacer puede ser la siguiente:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large 
+y =
+\begin{cases}
+1,\ \text{si }b + w_1x_1 + w_2x_2 \ge 0
+\\
+0,\ \text{si }b + w_1x_1 + w_2x_2 &lt; 0
+\end{cases}
+\end{split}\]</div>
+<p id="index-0">Para reformular mejor este problema, vamos a definir las <em>odds ratio</em>  de la siguiente manera</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{odds ratio }(p) = \frac{p}{q} = \frac{p}{1-p}
+\]</div>
+<p>Con poco código Python podemos obtener estos valores.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">odds_ratio</span><span class="p">(</span><span class="n">prob</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">prob</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prob</span><span class="p">)</span>
+
+<span class="c1"># calculemos un valor</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">.75</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
+<span class="n">odds_ratio</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">odds_ratio</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(3.0, 0.3333333333333333)
+</pre></div>
+</div>
+</div>
+</div>
+<p>De forma gráfica podemos obtener lo siguiente:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">figure2</span><span class="p">(</span><span class="n">prob1</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">.01</span><span class="p">,</span> <span class="mf">.99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">odds_ratio</span><span class="p">(</span><span class="n">prob</span><span class="p">),</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Probability&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Odds Ratio (log scale)&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Odds Ratio (log scale)&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Odds Ratio&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Odds Ratio&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="n">prob1</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">prob1</span><span class="p">)],</span> <span class="p">[</span><span class="n">odds_ratio</span><span class="p">(</span><span class="n">prob1</span><span class="p">),</span> <span class="n">odds_ratio</span><span class="p">(</span><span class="mf">.5</span><span class="p">),</span> <span class="n">odds_ratio</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">prob1</span><span class="p">)],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">fig</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">figure2</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e2f8f3f4f38e61ee3cbc19eb7f28c9cb293620bec41a99f2576912b91b8ec7e4.png" src="../_images/e2f8f3f4f38e61ee3cbc19eb7f28c9cb293620bec41a99f2576912b91b8ec7e4.png" />
+</div>
+</div>
+<p>Como puede verse en las gráficas anteriores, la función correspondiente a <em>odds ratio</em> no es simétrica, pero sin embargo la del logaritmo sí lo es. Por lo tanto esto nos sugiere tomar como modelo final el siguiente</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large
+\begin{aligned}
+b + w_1x_1 + w_2x_2 = &amp;\ z = \text{log}\left(\frac{p}{1-p}\right) \nonumber
+\\
+e^{b + w_1x_1 + w_2x_2} = &amp;\ e^z = \frac{p}{1-p} \nonumber
+\end{aligned}
+\end{split}\]</div>
+<p>A la expresión <span class="math notranslate nohighlight">\(\text{log}\left(\frac{p}{1-p}\right)\)</span> se le conoce como logit</p>
+<p>Despejando de la fórmula anterior p, se va a obtener el siguiente valor</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+P(y=1)=p = \sigma(z) = \frac{1}{1+e^{-z}}
+\]</div>
+<p>que precisamente es la función sigmoidea, que utilizando código de Python.</p>
+<p>En resumen, por z vamos a representar a los logit’s, y si a este z aplicamos la función sifmoidea (<span class="math notranslate nohighlight">\(\sigma\)</span>) entonces lo pasamos a la p(y=1).</p>
+<p>Una función para derivar esos valores, puede ser la siguiente:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">log_odds_ratio</span><span class="p">(</span><span class="n">prob</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">odds_ratio</span><span class="p">(</span><span class="n">prob</span><span class="p">))</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="mf">.75</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
+<span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.0986122886681098, -1.0986122886681098)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="mf">.75</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
+<span class="n">sigmoid</span><span class="p">(</span><span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">log_odds_ratio</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.75, 0.25)
+</pre></div>
+</div>
+</div>
+</div>
+<p>En <strong>Pytorch tenemos dos posibilidades</strong> de utilizar la función sigmoidea:</p>
+<ul class="simple">
+<li><p><em>torch.sigmoid</em></p></li>
+<li><p><em>nn.sigmoid</em></p></li>
+</ul>
+<p>De acuerdo con todo lo que hemos visto hasta ahora, se puede decir entonces que se cumple lo siguiente:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\text{P}(y=1) = \sigma(z) = \sigma(b+w_1x_1+w_2x_2)
+\]</div>
+<p>Es decir que la probabilidad de que y sea igual a 1 se puede ver como una composición de de dos funciones. La primera función que aplica una transformación líneal y después a la salida de esta se le aplica una transformación sigmoidea y esta sería la salida final. Este proceso se ve mejor en la siguiente figura</p>
+<p><img alt="clasificación" src="../_images/calsificacion.svg" /></p>
+<p>Ahora nos toca replicar esta idea con las herramientas que nos proporciona Pytorh. Por un lado se crea una red neuronal secuencial a la que se le añaden una transformación lineal, seguida de otra sigmoidea.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model1</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([(&#39;linear.weight&#39;, tensor([[0.5406, 0.5869]])), (&#39;linear.bias&#39;, tensor([-0.1657]))])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Con el fin de que todo lo expuesto hasta aquí, se pueda extender a cualquier conjunto de variable independientes o features, a continuación vamos a añadir una  notación matricial que además es la que se suele utilizar en temas de análisis multivariante que es el que subyace realmente a todo lo que se está exponiendo.</p>
+<p>La representación matricial de los vectores W y X sería la siguiente:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large W =
+\underset{(3 \times 1)}{
+\begin{bmatrix}
+b \\
+w_1 \\
+w_2
+\end{bmatrix}};
+X = 
+\underset{(3 \times 1)}{
+\begin{bmatrix}
+1 \\
+x_1 \\
+x_2
+\end{bmatrix}}
+\end{split}\]</div>
+<p>El logit z definido como hemos visto anteriormente, se podría escribir de la siguiente manera</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large 
+\begin{aligned}
+z
+&amp; = W^T X
+=
+\underset{(1 \times 3)}{
+\begin{bmatrix}
+- &amp; w^{T} &amp; -\\
+\end{bmatrix}}
+\underset{(3 \times 1)}{
+\begin{bmatrix}
+1 \\
+x_1 \\
+x_2
+\end{bmatrix}}
+= \underset{(1 \times 3)}{
+\begin{bmatrix}
+b &amp; w_1 &amp; w_2
+\end{bmatrix}}
+\underset{(3 \times 1)}{
+\begin{bmatrix}
+1 \\
+x_1 \\
+x_2
+\end{bmatrix}}\\
+&amp; = b + w_1x_1 + w_2x_2
+\end{aligned}
+\end{split}\]</div>
+</section>
+<section id="la-funcion-de-perdida">
+<h2><span class="section-number">7.4. </span>La función de pérdida.<a class="headerlink" href="#la-funcion-de-perdida" title="Permalink to this heading">#</a></h2>
+<p id="index-1">Para el problema concreto con el que nos enfrentamos, no tiene ningún sentido emplear la función de pérdida utilizada en el caso de mínimos cuadrados (análisis de regresión), ya que aquí los únicos valores de salida que obtenemos son 1 ó 0. Para este tipo de problemas, se suele emplear la función denominada <strong>binary cross-entropy(BCE)</strong> que también es conocida como <strong>log loss</strong>.</p>
+<p>La función BCE necesita tener las probabilidades predichas devueltas por la función sigmoidea y los valores reales de <em>y</em>.Entonces vamos a armar nuestra función de pérdida siguiendo estas ideas.</p>
+<ul class="simple">
+<li><p>Si una observación tuviera como valor de y observado 1 (y=1), entonces sería deseable que nuestro modelo prediga que la probabilidad de que y sea 1 este muy cerca de 1, y como el logaritmo de 1 es cero, entonces el logaritmo de esa probabilidad estaría cerca de cero. Es decir:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\Large y_i = 1 \Rightarrow \text{error}_i=\text{log}(\text{P}(y_i=1))
+\]</div>
+<ul class="simple">
+<li><p>Si una observación tuviera como valor observado 0 (y=0), entonces aplicando un argumento similar al anterior se debería esperar que P(y=0) debería estar cerca de cero, y entonces 1-p(y=0) estaría cerca de uno. Por lo tanto en este caso</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{P}(y_i=0)=1-\text{P}(y_i=1)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\Large y_i = 0 \Rightarrow \text{error}_i=\text{log}(1-\text{P}(y_i=1))
+\]</div>
+<p>Entonces, teniendo en cuenta estas ideas la función BCE lo que hace es promediar todos estos errores e invertir el signo, es decir, sería la siguiente.</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\text{BCE}(y)={-\frac{1}{(N_{\text{pos}}+N_{\text{neg}})}\Bigg[{\sum_{i=1}^{N_{\text{pos}}}{\text{log}(\text{P}(y_i=1))} + \sum_{i=1}^{N_{\text{neg}}}{\text{log}(1 - \text{P}(y_i=1))}}\Bigg]}
+\]</div>
+<p>Otra forma más compacta de ver la expresión anterior es la siguiente.</p>
+<div class="math notranslate nohighlight">
+\[
+\Large
+\text{BCE}(y)={-\frac{1}{N}\sum_{i=1}^{N}{\left[y_i \text{log}(\text{P}(y_i=1)) + (1-y_i) \text{log}(1-\text{P}(y_i=1))\right]}}
+\]</div>
+<p>La fórmula anterior, se podría trasladar a código de Pytorch de la siguiente manera (suponiendo que tenemos dos observaciones con valores de clasificación 0 y 1 y con probabilidades dadas por el modelo 0.9 y 0.2).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">dummy_predictions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">.9</span><span class="p">,</span> <span class="mf">.2</span><span class="p">])</span>
+<span class="n">n_total</span> <span class="o">=</span> <span class="n">dummy_labels</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">summation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+<span class="n">dummy_labels</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">dummy_predictions</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dummy_labels</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dummy_predictions</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">summation</span> <span class="o">/</span> <span class="n">n_total</span>
+<span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(0.1643)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Para ver con más claridad el sentido de la función BCE se invita al lector a ver el artículo <a href="https://towardsdatascience.com/understanding-binary-cross-entropy-log-loss-a-visual-explanation-a3ac6025181a" target="_blank">Understanding binary cross-entropy / log loss: a visual explanation</a>.</p>
+<p>Pytorch lógicamente ya tiene implementada esta <a href="https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html" target="_blank"> función de pérdida denominada <strong>nn.BCELoss</strong></a>. Esta función tiene básicamente dos argumentos opcionales (los otros dos están <em>deprecated</em>):</p>
+<ul class="simple">
+<li><p><em>reduction</em>: puede tomar los valores <em>mean, sum o none</em>. El valor por defecto es mean y se corresponde con la expresión que anteriormente hemos visto. La última opción, <strong>none</strong>, corresponde a la forma no reducida, es decir, devuelve  la matriz completa de errores.</p></li>
+<li><p><em>weight</em>. Tiene un valor por defecto que es <em>none</em> y que significa que todos los puntos tienen el mismo <a class="reference external" href="http://peso.Si">peso.Si</a> se informa, tiene que ser un tensor con un tamaño igual al número de elementos de un minilote (mini-batch), que representa los pesos asignados a cada elemento del lote. En otras palabras, este argumento permite asignar diferentes pesos a cada elemento del lote actual, en función de su posición. De esta manera el primer elemento tendría un peso determinado, el segundo elemento tendría un peso diferente, y así sucesivamente… independientemente de la clase real de ese punto de datos en particular. Por regla general lo que se utiliza es un peso igual a  cada observación, es decir el valor que tiene por defecto.</p></li>
+</ul>
+<p>El código que se utiliza para construir esta función es el siguiente</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">loss_fn</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BCELoss()
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como vemos nos devuelve otra función, a la que hay que pasar dos parámetros, el primero las probabilidades predichas por el modelo y de segundo los valores reales de la variable dependiente. Veamos el siguiente ejemplo, para entender mejor su uso.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">dummy_predictions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">.9</span><span class="p">,</span> <span class="mf">.2</span><span class="p">])</span>
+
+<span class="c1"># FORMA CORRECTA DE USO </span>
+<span class="n">right_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">dummy_predictions</span><span class="p">,</span> <span class="n">dummy_labels</span><span class="p">)</span>
+
+<span class="c1"># FORMA INCORRECTA DE USO</span>
+<span class="n">wrong_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">dummy_labels</span><span class="p">,</span> <span class="n">dummy_predictions</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">right_loss</span><span class="p">,</span> <span class="n">wrong_loss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(0.1643) tensor(15.0000)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Hasta aquí, todo bien Y perfecto. Pero es preciso saber que hay otra función de pérdida binaria de entropía cruzada
+disponible, y es muy importante saber cuándo usar una u otra, para no acabar con una combinación incoherente de
+modelo y función de pérdida. Además, se entenderá por qué se he hecho tanto alboroto con los logits…</p>
+<section id="la-funcion-de-perdida-bcewithlogitsloss">
+<h3><span class="section-number">7.4.1. </span>La función de pérdida BCEWithLogitsLoss<a class="headerlink" href="#la-funcion-de-perdida-bcewithlogitsloss" title="Permalink to this heading">#</a></h3>
+<p>La función de pérdida anterior, como hemos visto,  toma probabilidades como un argumento junto con los valores reales, sin embargo la función de pérdida que aquí presentamos toma como parámetro de entrada los <em>logits</em> en lugar de las probabilidades.</p>
+<p>Todo esto significa que <strong>NO debe añadir una función sigmoide como la última capa</strong> de su modelo cuando se utiliza esta función de pérdida. Esta función de pérdida combina la capa  sigmoide y la anterior pérdida de entropía cruzada binaria en una sola.</p>
+<p>En consecuencia, se tienen dos opciones.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p><strong>opción 1</strong>. <em>nn.Sigmoid</em> es la última capa en la red neuronal. Entonces el modelo obtiene probabilidades y se deberá utilizar la función de pérdida <em>nn.BCELoss</em>.</p></li>
+<li><p><strong>opción 2</strong>. La última capa no tiene <em>nn.Sigmoid</em>. Entonces el modelo estará devolviendo <em>logits</em></p></li>
+</ul>
+<p>Los dos modelo son válidos, ahora bien, <strong>es preferible el segundo modelo</strong> porque numericamente es más estable que la opción 1.</p>
+</div>
+<p>Los parámetros que se pueden pasar a la <a href="https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html" target="_blank"> función de pérdida nn.BCEWithLogitsLoss </a> son los siguientes:</p>
+<ul class="simple">
+<li><p><em>reductión</em>. Puede tomar los valores <em>mean, sum o none</em>. El valor por defecpo es mean.</p></li>
+<li><p><em>wight</em>. Similar a lo explicado para el caso de la función <em>nn.BCLoss</em>.</p></li>
+<li><p><em>pos_weight</em>. el peso de las muestras positivas, debe ser un tensor con una longitud igual al número de etiquetas asociadas a un punto de datos (la documentación se refiere a las clases, en lugar de las etiquetas, lo que hace que todo sea aún más confuso).</p></li>
+</ul>
+<p>Veamos un ejemplo de uso de esta función de pérdida</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn_logits</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">loss_fn_logits</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BCEWithLogitsLoss()
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como en el caso anterior, nos devuelve una función. Entonces para continuar con los datos de mini-ejemplo utilizado antes vamos a calcula los <em>log_odds_ratio</em> es decir los logits de 0.9 y 0.2</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">logit1</span> <span class="o">=</span> <span class="n">log_odds_ratio</span><span class="p">(</span><span class="mf">.9</span><span class="p">)</span>
+<span class="n">logit2</span> <span class="o">=</span> <span class="n">log_odds_ratio</span><span class="p">(</span><span class="mf">.2</span><span class="p">)</span>
+<span class="n">dummy_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">dummy_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">logit1</span><span class="p">,</span> <span class="n">logit2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dummy_logits</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([ 2.1972, -1.3863], dtype=torch.float64)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Calculamos ahora la función de pérdida. Observar que con esta función de pérdida, se le pasa los log odds_ratio, no las probabilidades, como ocurría con la función de pérdida BCELoss.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn_logits</span><span class="p">(</span><span class="n">dummy_logits</span><span class="p">,</span> <span class="n">dummy_labels</span><span class="p">)</span>
+<span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(0.1643)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Que es el mismo valor que el observado anteriormente.</p>
+</section>
+</section>
+<section id="datos-no-balanceados">
+<h2><span class="section-number">7.5. </span>Datos no balanceados.<a class="headerlink" href="#datos-no-balanceados" title="Permalink to this heading">#</a></h2>
+<p>En el ejemplo de clasificación anteriormente generado, los datos están balanceados, es decir hay aproximadamente el mismo número de casos positivos que negativos, pero esta situación no  la tenemos siempre, y en bastantes ocasiones nos encontramos con un conjunto de datos no balanceados que si no son tratados previamente nos pueden dar problemas a la hora de resolver problemas de clasificación.</p>
+<p>Para explicar y ver de una forma práctica el comportamiento de la función <em>BCEWithLogitsLoss</em> vamos a generar un conjunto muy pequeño de datos no balanceados similar al que hemos visto en el ejemplo anterior, pero en este caso añadimos dos puntos más de tipo negativo, y entonces también añadimos dos  logits más de tipo <em>ligit2</em>. Es decir, generamos los siguientes datos</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_imb_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">dummy_imb_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">logit1</span><span class="p">,</span> <span class="n">logit2</span><span class="p">,</span> <span class="n">logit2</span><span class="p">,</span> <span class="n">logit2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Evidentemente, el anterior conjunto de datos es no balanceado puesto que hay tres datos de tipo negativo y uno solo de tipo positivo. Si recordamos cuando se ha definido <em>BCEWithLogitsLoss</em> se ha comentado que tenia un argumento denominado <em>pos_weight</em> que es el que se podría utilizar para asignar pesos y poder balancear mejor los datos. Una posible fórmula de asignación de pesos podría ser la siguiente:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{pos_weight} = \frac{\text{# points in negative class}}{\text{# points in positive class}}
+\]</div>
+<p>En el caso en el que estamos trabajando, el valor sería 3. Entonces cada valor de la clase positiva sería multiplicado por esta cantidad. Entonces este valor lo podemos calcular de la siguiente manera</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_neg</span> <span class="o">=</span> <span class="p">(</span><span class="n">dummy_imb_labels</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">n_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">dummy_imb_labels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+<span class="n">pos_weight</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_neg</span> <span class="o">/</span> <span class="n">n_pos</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+<span class="n">pos_weight</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([3.])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Y construiriamos la función de pérdida de la siguiente manera</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn_imb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">(</span>
+<span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+<span class="n">pos_weight</span><span class="o">=</span><span class="n">pos_weight</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Con lo cual se tendría el siguiente resultado</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn_imb</span><span class="p">(</span><span class="n">dummy_imb_logits</span><span class="p">,</span> <span class="n">dummy_imb_labels</span><span class="p">)</span>
+<span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(0.2464)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Pues bien, resulta que PyTorch no calcula una media ponderada. Esto es lo que se espera de una media ponderada:</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{weighted average} = \frac{\text{pos_weight} \sum_{i=1}^{N_{\text{pos}}}{\text{loss}_i}+\sum_{i=1}^{N_{\text{neg}}}{\text{loss}_i}}{\text{pos_weight} N_{\text{pos}}+N_{\text{neg}}}
+\]</div>
+<p>Pero sin embargo, lo que calcula Pytorch es lo siguiente</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{BCEWithLogitsLoss} = \frac{\text{pos_weight} \sum_{i=1}^{N_{\text{pos}}}{\text{loss}_i}+\sum_{i=1}^{N_{\text{neg}}}{\text{loss}_i}}{N_{\text{pos}}+N_{\text{neg}}}
+\]</div>
+<p>Entonces para utilizar la fórmula anterior para un función de pérdida, se puede hacer los siguiente. Con el siguiente código se puede calcular el numerador de la última fórmula anterior</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn_imb_sum</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">(</span>
+<span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+<span class="n">pos_weight</span><span class="o">=</span><span class="n">pos_weight</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Y ahora teniendo en cuenta el denominador, se calcularía definitivamente así</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn_imb_sum</span><span class="p">(</span><span class="n">dummy_imb_logits</span><span class="p">,</span> <span class="n">dummy_imb_labels</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">/</span> <span class="p">(</span><span class="n">pos_weight</span> <span class="o">*</span> <span class="n">n_pos</span> <span class="o">+</span> <span class="n">n_neg</span><span class="p">)</span>
+<span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([0.1643])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="configuracion-del-modelo">
+<h2><span class="section-number">7.6. </span>Configuración del modelo.<a class="headerlink" href="#configuracion-del-modelo" title="Permalink to this heading">#</a></h2>
+<p>En este apartado sólo necesitamos definir un modelo, una función de pérdida adecuada y un optimizador. Definiremos un modelo que produzca logits y utilicemos BCEWithLogitsLoss como función de pérdida.</p>
+<p>Como tenemos dos características y estamos produciendo logits en lugar de probabilidades, nuestro modelo tiene  una sola capa: Lineal(2, 1). Seguiremos utilizando el optimizador SGD con una tasa de aprendizaje de 0,1 por ahora.</p>
+<p>Entonces nuestro modelo quedaría configurado de la siguiente manera</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sets learning rate - this is &quot;eta&quot; ~ the &quot;n&quot; like Greek letter</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="c1"># Defines a SGD optimizer to update the parameters</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+
+<span class="c1"># Defines a BCE loss function</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="entrenamiento-del-modelo">
+<h2><span class="section-number">7.7. </span>Entrenamiento del modelo<a class="headerlink" href="#entrenamiento-del-modelo" title="Permalink to this heading">#</a></h2>
+<p>Utilizaremos para esto la clase ya definida en el capítulo anterior que se llamaba <em>StepByStep</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">sbs</span> <span class="o">=</span> <span class="n">StepByStep</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+<span class="n">sbs</span><span class="o">.</span><span class="n">set_loaders</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
+<span class="n">sbs</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">sbs</span><span class="o">.</span><span class="n">plot_losses</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e4af6a80b2c3e17c466cb4474eda44fb827f119d33d5db12dfd39fadf986a2cd.png" src="../_images/e4af6a80b2c3e17c466cb4474eda44fb827f119d33d5db12dfd39fadf986a2cd.png" />
+</div>
+</div>
+<p>Observamos en el gráfico anterior algo importante a tener en <a class="reference external" href="http://cuenta.La">cuenta.La</a> curva de  la pérdida de validación es menor que la pérdida de entrenamiento. ¿No debería ser al revés? Bueno, en general, SÍ, debería… pero puedes aprender más sobre situaciones en las que este este intercambio en <a href="https://pyimagesearch.com/2019/10/14/why-is-my-validation-loss-lower-than-my-training-loss/" target="_blank"> este interesante post </a>.</p>
+<p>En nuestro caso, simplemente se dio el caso de que el conjunto de validación es más fácil de clasificar, y se puede ver en los gráficos iniciales que hemos sacado al principio sobre la distribución de los puntos de prueba y los de entrenamiento: si se mira en esa Figura, al principio del capítulo, observará que los puntos rojo y azul en el gráfico de la derecha (validación) no están tan mezclados como los de la izquierda (entrenamiento). Por ese motivo discrimina mucho mejor en los datos de validación y ese será el motivo de que la función de perdida es menor para estos puntos.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([(&#39;linear.weight&#39;, tensor([[ 1.1806, -1.8693]], device=&#39;cuda:0&#39;)), (&#39;linear.bias&#39;, tensor([-0.0591], device=&#39;cuda:0&#39;))])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Con esta salida lo que obtenemos son los logits, que serán los siguientes</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\large
+\begin{array}{ccccccc}
+z &amp; = &amp; b &amp; + &amp; w_1x_1 &amp; + &amp; w_2x_2
+\\
+z &amp; = &amp; -0.0587 &amp; + &amp; 1.1822x_1 &amp; - &amp; 1.8684x_2
+\end{array}
+\end{split}\]</div>
+<p>Veamos ahora cómo hariamos la predicción de los cuatro primeros puntos de conjunto de entrenamiento</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">sbs</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_train_tensor</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">predictions</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.20345592],
+       [ 2.9444451 ],
+       [ 3.6933177 ],
+       [-1.2334073 ]], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Los resultado anteriores, claramente  no son probabilidades, son los logits. Para calcular las probabilidades, tenemos que aplicar a los logits la función sigmoidea y por lo tanto debemos ejecutar lo siguiente:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">probabilities</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<span class="n">probabilities</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.5506892 ],
+       [0.9500003 ],
+       [0.9757152 ],
+       [0.22558564]], dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Por último, hay que pasar de las probabilidades a las clases. Si la probabilidad es mayor o igual que un umbral, es un ejemplo de clase positiva. Si es menor que el umbral, es un ejemplo negativo. En principio la elección de ese umbral puede ser o.5, pero esta cuestión depende de otros factores que más adelante veremos.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large y =
+\begin{cases}
+1,\ \text{if P}(y=1) \ge 0.5
+\\
+0,\ \text{if P}(y=1) &lt; 0.5
+\end{cases}
+\end{split}\]</div>
+<p>Pero la probabilidad en sí no es más que la función sigmoidea aplicada al logit(z), por lo tanto:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large y =
+\begin{cases}
+1,\ \text{if } \sigma(z) \ge 0.5
+\\
+0,\ \text{if } \sigma(z) &lt; 0.5
+\end{cases}
+\end{split}\]</div>
+<p>Pero la función sigmoidea tiene un valor de 0,5 sólo cuando el logit(z) tiene un valor de cero, y en consecuencia:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large y =
+\begin{cases}
+1,\ \text{if } z \ge 0
+\\
+0,\ \text{if } z &lt; 0
+\end{cases}
+\end{split}\]</div>
+<p>Por lo tanto, si no nos importan las probabilidades, podríamos utilizar las predicciones (logits) directamente para obtener las clases predichas para los puntos de datos:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">predictions</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+<span class="n">classes</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">36</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">predictions</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">classes</span>
+
+<span class="nn">File D:\MisTrabajos\Pytorch\pytorch\lib\site-packages\numpy\__init__.py:284,</span> in <span class="ni">__getattr__</span><span class="nt">(attr)</span>
+<span class="g g-Whitespace">    </span><span class="mi">281</span>     <span class="kn">from</span> <span class="nn">.testing</span> <span class="kn">import</span> <span class="n">Tester</span>
+<span class="g g-Whitespace">    </span><span class="mi">282</span>     <span class="k">return</span> <span class="n">Tester</span>
+<span class="ne">--&gt; </span><span class="mi">284</span> <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;module </span><span class="si">{!r}</span><span class="s2"> has no attribute &quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">285</span>                      <span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+
+<span class="ne">AttributeError</span>: module &#39;numpy&#39; has no attribute &#39;int&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Claramente, los puntos donde los logits (es decir los valores que hemos designado con z) son iguales a cero determinan la límite entre los ejemplos positivos y negativos.</p>
+<p>Lo que sí podemos decir es que diferentes umbrales (thresholds) le darán diferentes matrices de confusión y, por tanto, diferentes métricas, como accuracy, precisión y recall. Volveremos a hablar de ello en la siguiente sección.</p>
+</section>
+<section id="decision-boundary">
+<h2><span class="section-number">7.8. </span>Decisión Boundary.<a class="headerlink" href="#decision-boundary" title="Permalink to this heading">#</a></h2>
+<p id="index-2">Anteriormente se ha dicho que creabamos una frontera de decisión (decision boundary) haciendo z=0, veamos lo que esto significa.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large
+\begin{array}{ccccccccc}
+z &amp; = &amp;   0 &amp; =   &amp; b &amp; + &amp; w_1x_1 &amp; + &amp; w_2x_2
+\\
+&amp; &amp; -w_2x_2 &amp; = &amp; b &amp; + &amp; w_1x_1 &amp; &amp;
+\\
+&amp; &amp; x_2 &amp; = &amp; -\frac{b}{w_2} &amp; - &amp;\frac{w_1}{w_2}x_1 &amp; &amp;
+\end{array}
+\end{split}\]</div>
+<p>Es decir y de acuerdo con el resultado anterior, el valor de x2 quedará fijado por el valor que demos a x1, y así de esta manera podemos calcular la frontera de decisión. La anterior expresión genérica, para el problema que estamos abordando, nos daría lo siguiente:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\Large
+\begin{array}{ccccccccc}
+&amp; &amp; x_2 &amp; = &amp; -\frac{0.0587}{1.8684} &amp; + &amp;\frac{1.1822}{1.8684}x_1 &amp; &amp;
+\\
+&amp; &amp; x_2 &amp; = &amp; -0.0314 &amp; + &amp;0.6327x_1 &amp; &amp;
+\end{array}
+\end{split}\]</div>
+<p>Vamos a sacar para este ejemplo la matriz de confusión</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">logits_val</span> <span class="o">=</span> <span class="n">sbs</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+<span class="n">probabilities_val</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">logits_val</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+<span class="n">cm_thresh50</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="p">(</span><span class="n">probabilities_val</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">))</span>
+<span class="n">cm_thresh50</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 7,  2],
+       [ 1, 10]], dtype=int64)
+</pre></div>
+</div>
+</div>
+</div>
+<p>En la siguiente figura se muestra cómo es el formato de salida de una matriz de confusión en scikit learn</p>
+<p><img alt="Matriz confusión" src="../_images/matrizConfusion.PNG" /></p>
+<p>Vamos a definir a continuación una función que toma como argumento la matriz de confusión obtenida con scikit learn y de ella vamos a extraer los cuatro elementos</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">split_cm</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
+    <span class="c1"># Actual negatives go in the top row, </span>
+    <span class="c1"># above the probability line</span>
+    <span class="n">actual_negative</span> <span class="o">=</span> <span class="n">cm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Predicted negatives go in the first column</span>
+    <span class="n">tn</span> <span class="o">=</span> <span class="n">actual_negative</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Predicted positives go in the second column</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">actual_negative</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Actual positives go in the bottow row, </span>
+    <span class="c1"># below the probability line</span>
+    <span class="n">actual_positive</span> <span class="o">=</span> <span class="n">cm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Predicted negatives go in the first column</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">actual_positive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Predicted positives go in the second column</span>
+    <span class="n">tp</span> <span class="o">=</span> <span class="n">actual_positive</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>De los datos obtenidos en una matriz de confusión se suelen extaer diferentes métricas que pretenden estudiar la bondad del ajuste desde distintos puntos de vista. A continuación se pasan a exponer estas métricas.</p>
+</section>
+<section id="razon-de-true-y-false-positivos">
+<h2><span class="section-number">7.9. </span>Razón de True y False positivos.<a class="headerlink" href="#razon-de-true-y-false-positivos" title="Permalink to this heading">#</a></h2>
+<p>Se definen de la siguiente manera.</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{TPR} = \frac{\text{TP}}{\text{TP + FN}} \ \ \  \text{FPR} = \frac{\text{FP}}{\text{FP + TN}}
+\]</div>
+<p>Vamos a definir nosotros una función que nos permita calcular estas tasas de forma automática, una vez conozcamos la matriz de confusión.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tpr_fpr</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
+    <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">split_cm</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+    
+    <span class="n">tpr</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>
+    <span class="n">fpr</span> <span class="o">=</span> <span class="n">fp</span> <span class="o">/</span> <span class="p">(</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tn</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">fpr</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tpr_fpr</span><span class="p">(</span><span class="n">cm_thresh50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.9090909090909091, 0.2222222222222222)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="precision-y-recall">
+<h2><span class="section-number">7.10. </span>Precision y Recall.<a class="headerlink" href="#precision-y-recall" title="Permalink to this heading">#</a></h2>
+<p>Son otras dos medidas muy interesantes en los problemas de clasificación. Se definen de la siguiente manera.</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{Recall} = \frac{\text{TP}}{\text{TP + FN}} \ \ \  \text{Precision} = \frac{\text{TP}}{\text{TP + FP}}
+\]</div>
+<p>La función que nos permite obtener estos valores, se puede construir de la siguiente manera</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">precision_recall</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
+    <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">split_cm</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+    
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">precision</span><span class="p">,</span> <span class="n">recall</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">precision_recall</span><span class="p">(</span><span class="n">cm_thresh50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.8333333333333334, 0.9090909090909091)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="acuracidad">
+<h2><span class="section-number">7.11. </span>Acuracidad.<a class="headerlink" href="#acuracidad" title="Permalink to this heading">#</a></h2>
+<p id="index-3">Con esta medida se calcula el porcentaje de aciertos del algoritmo. Se define por lo tanto de la siguiente manera</p>
+<div class="math notranslate nohighlight">
+\[
+\Large \text{Accuracy} = \frac{\text{TP+TN}}{\text{TP+TN+FP+FN}}
+\]</div>
+<p>Como podemos observar en todas las fórmulas expuestas anteriormente existe una relación entre TPR y FPR así como entre los valores de precison y recall. También hay que tener en cuenta que si se modifica el punto de corte o threshold también cambia la matriz de confusión y por tanto los indicadores anteriormente presentados. POr lo tanto, si se modifica el punto de corte entre 0 y 1 se tendrán una serie de pares de valores (FPR,TPR) y (Recall,precision). Si ponemos el primer conjunto de puntos en unos ejes coordenados, se obtendrá la denominada <em>curva de ROC</em>, mientras que si graficamos el segundo conjunto de puntos, se obtendrá el gráfico denominado <em>Curva Precision-Recall</em>.</p>
+<p>Si tenemos en cuenta los puntos de TPR, FPR, precision y recall obtenidos para el punto de corte 0.5 y los ponemos en los gráficos comentados anteriormente, se obtendría lo siguiente.</p>
+<p><img alt="Curva ROC" src="../_images/ROC.PNG" /></p>
+<p>Lo anterior se obtiene para un punto de corte prefijado. Si ahora hacemos variar este punto de corte obtendríamos nuevos puntos que configurarán las curva de ROC y de preciso-recall.</p>
+<p>Veamos qué valores obtenemos para un punto de corte de 0.3</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="p">(</span><span class="n">probabilities_val</span> <span class="o">&gt;=</span> <span class="mf">0.3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 6,  3],
+       [ 0, 11]], dtype=int64)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Para un valor 0.7</span>
+<span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="p">(</span><span class="n">probabilities_val</span> <span class="o">&gt;=</span> <span class="mf">0.7</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[9, 0],
+       [2, 9]], dtype=int64)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Al final si vamos moviendo estos puntos de corte entre 0 y 1 obtendríamos las dos gráficas que se muestran a continuación</p>
+<p><img alt="Curvas de ROC" src="../_images/ROC2.PNG" /></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./jupyters"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Tema%202.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">6. </span>Tema 2</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="capitulo4_clasificacionImagenes.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">8. </span>Introducción clasificación de imágenes.</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generacion-de-los-datos">7.1. Generación de los datos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparacion-de-los-datos">7.2. Preparación de los datos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-modelo">7.3. El modelo.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-funcion-de-perdida">7.4. La función de pérdida.</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#la-funcion-de-perdida-bcewithlogitsloss">7.4.1. La función de pérdida BCEWithLogitsLoss</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datos-no-balanceados">7.5. Datos no balanceados.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-del-modelo">7.6. Configuración del modelo.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#entrenamiento-del-modelo">7.7. Entrenamiento del modelo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decision-boundary">7.8. Decisión Boundary.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#razon-de-true-y-false-positivos">7.9. Razón de True y False positivos.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#precision-y-recall">7.10. Precision y Recall.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acuracidad">7.11. Acuracidad.</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Francisco Rodríguez
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

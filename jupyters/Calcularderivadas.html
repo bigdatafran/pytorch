@@ -1,0 +1,1156 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>2. Introducción. &#8212; Trabajando con PyTorch</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'jupyters/Calcularderivadas';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. Introducción a los optimizadores con PyTorch" href="OptimizadoresPyTorch.html" />
+    <link rel="prev" title="1. operaciones con tensores." href="OperacionesTensores.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../introduccion.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Trabajando con PyTorch</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../introduccion.html">
+                    Introducción
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Pycharm</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="OperacionesTensores.html">1. Los tensores en PyTorch</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Introducción a PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OptimizadoresPyTorch.html">3. Optimizadores en PyTorch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tema1regresionlineal.html">4. Regresión lineal.</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Tema%202.html">6. Regresión lineal. Continuación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tema_3_clasificacion.html">7. Problemas de clasificación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="capitulo4_clasificacionImagenes.html">8. Introducción clasificación de imágenes.</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="ModelosPreentrenados.html">11. TorchVision-Modelos preentrenados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Capitulo4bisEspacioFeatures.html">12. Espacio Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Capitulo5Convoluciones.html">13. Introducción a las convoluciones.</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="Tema11_NLP.html">26. Lenguaje natural</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Apéndice</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Apendice.html">27. Apéndice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Índice de términos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">28. Índice de términos</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/jupyters/Calcularderivadas.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Introducción.</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#los-tensores">2.1. Los tensores.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vectores-unidimensionales-en-pytorch">2.2. Vectores unidimensionales en Pytorch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convertir-numpy-array-a-tensores">2.3. Convertir numpy array a tensores.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convertir-un-pandas-series-a-tensor">2.4. Convertir un pandas series a tensor.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indexacion-y-slicing-en-tensores-unidimensionales">2.5. Indexación y slicing en tensores unidimensionales.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funciones-para-los-tensores">2.6. Funciones para los tensores.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensores-bidimensionales">2.7. Tensores bidimensionales.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conversion-entre-numpy-arrays-y-tensores">2.8. Conversión entre numpy arrays y tensores</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conversion-entre-dataframes-y-tensores">2.9. Conversión entre dataframes y tensores</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indexacion-y-slicin-en-2-d">2.10. Indexación y slicin en 2_D</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-de-derivadas-con-pytorch">2.11. Cálculo de derivadas con Pytorch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-de-derivadas-parciales-en-pytorch">2.12. Cálculo de derivadas parciales en Pytorch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivada-para-multiples-valores">2.13. Derivada para múltiples valores</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="introduccion">
+<h1><span class="section-number">2. </span>Introducción.<a class="headerlink" href="#introduccion" title="Permalink to this heading">#</a></h1>
+<p>PyTorch es una biblioteca de aprendizaje automático3 de código abierto basada en la biblioteca de Torch, utilizado para aplicaciones que implementan cosas como visión artificial y procesamiento de lenguajes naturales, principalmente desarrollado por el Laboratorio de Investigación de Inteligencia Artificial de Facebook (FAIR).</p>
+<p>Pytorch es un software libre y de código abierto liberado bajo la Licencia Modificada de BSD. A pesar de que la interfaz de Python está más pulida y es el foco principal del desarrollo, PyTorch también tiene una interfaz en C++.</p>
+<p>En este primer módulo se van a ver grandes pinceladas de esta librería exponiendo las ideas básicas de lo que se puede hacer con las herramientas que nos ofrece. Para ello, comenzamos a ver cómo poder generar tensores (son objetos similares a los narrays de numpy, pero con los cuales se puede trabajar en GPU, no ocurriendo lo mismo con los n-arrays de numpy) y posteriormente se verá cómo se pueden obtener valores de la derivada, cuestión esta última muy importante a la hora de hacer procesos de optimización.</p>
+<section id="los-tensores">
+<h2><span class="section-number">2.1. </span>Los tensores.<a class="headerlink" href="#los-tensores" title="Permalink to this heading">#</a></h2>
+<p>Comenzamos viendo cómo poder construir tensores en Pytorch, lo primero que hacemos es importar la librería</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Para ver si podemos utilizar GPU</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<p>Como vemos en la salida anterior disponemos de la tarjeta gráfica y de cuda para poder trabajar sobre esta plataforma.</p>
+</section>
+<section id="vectores-unidimensionales-en-pytorch">
+<h2><span class="section-number">2.2. </span>Vectores unidimensionales en Pytorch<a class="headerlink" href="#vectores-unidimensionales-en-pytorch" title="Permalink to this heading">#</a></h2>
+<p>Vamos a trabajar en esta sección con Pandas y numpy y lo primero que hacemos es importar estas librerías</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Creamos inicialmente un tensor de una sola dimensión de números enteros</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">int_to_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo de tensor después de la conversión: &quot;</span><span class="p">,</span> <span class="n">int_to_tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo de tensor después de la conversión: &quot;</span><span class="p">,</span> <span class="n">int_to_tensor</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tipo de tensor después de la conversión:  torch.int64
+Tipo de tensor después de la conversión:  torch.LongTensor
+</pre></div>
+</div>
+</div>
+</div>
+<p>Si quisiéramos un tensor de tipo float, lo podemos hacer de las dos maneras siguientes:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">float_to_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">11.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo de tensor después de la conversión: &quot;</span><span class="p">,</span> <span class="n">float_to_tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo de tensor después de la conversión: &quot;</span><span class="p">,</span> <span class="n">float_to_tensor</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tipo de tensor después de la conversión:  torch.float32
+Tipo de tensor después de la conversión:  torch.FloatTensor
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># O también</span>
+<span class="n">int_list_to_float_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span>
+<span class="n">int_list_to_float_tensor</span><span class="o">.</span><span class="n">type</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo de tensor después de la conversión: &quot;</span><span class="p">,</span> <span class="n">int_list_to_float_tensor</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tipo de tensor después de la conversión:  torch.FloatTensor
+</pre></div>
+</div>
+</div>
+</div>
+<p>Para hacer una redimensión del array, lo haremos con la propiedad view()</p>
+<div class="cell docutils container" id="index-0">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reshaped_tensor</span> <span class="o">=</span> <span class="n">int_list_to_float_tensor</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tensor original: &quot;</span><span class="p">,</span> <span class="n">int_list_to_float_tensor</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tensor redimensionado: &quot;</span><span class="p">,</span> <span class="n">reshaped_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tensor original:  tensor([10., 11., 12., 13.])
+Tensor redimensionado:  tensor([[10.],
+        [11.],
+        [12.],
+        [13.]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>Al igual que ocurre con numpy, si no conocemos cómo que da una determinada dimensión podemos poner el valor de -1 para que se calcule de forma automática. Por ejemplo el problema anterior también se puede hacer así:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reshaped_tensor</span> <span class="o">=</span> <span class="n">int_list_to_float_tensor</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tensor original: &quot;</span><span class="p">,</span> <span class="n">int_list_to_float_tensor</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tensor redimensionado: &quot;</span><span class="p">,</span> <span class="n">reshaped_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tensor original:  tensor([10., 11., 12., 13.])
+Tensor redimensionado:  tensor([[10.],
+        [11.],
+        [12.],
+        [13.]])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="convertir-numpy-array-a-tensores">
+<h2><span class="section-number">2.3. </span>Convertir numpy array a tensores.<a class="headerlink" href="#convertir-numpy-array-a-tensores" title="Permalink to this heading">#</a></h2>
+<p>En este apartado vamos a ver cómo podemos convertir un numpy array en un tensor, con el cual ya se podrás trabajar con él en GPU.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Un numpy array a tensor</span>
+<span class="n">numpy_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">11.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">])</span>
+<span class="n">from_numpy_to_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">numpy_arr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dtype del tensor: &quot;</span><span class="p">,</span> <span class="n">from_numpy_to_tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dtype del tensor: &quot;</span><span class="p">,</span> <span class="n">from_numpy_to_tensor</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dtype del tensor:  torch.float64
+dtype del tensor:  torch.DoubleTensor
+</pre></div>
+</div>
+</div>
+</div>
+<p>Para hacer el camino recíproco, es decir pasar de tensor a numpy array</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Un tensor a un numpy array</span>
+<span class="n">tensor_to_numpy</span> <span class="o">=</span> <span class="n">from_numpy_to_tensor</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;back a numpy desde tensor: &quot;</span><span class="p">,</span> <span class="n">tensor_to_numpy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dtype del tensor convertido: &quot;</span><span class="p">,</span> <span class="n">tensor_to_numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>back a numpy desde tensor:  [10. 11. 12. 13.]
+dtype del tensor convertido:  float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="convertir-un-pandas-series-a-tensor">
+<h2><span class="section-number">2.4. </span>Convertir un pandas series a tensor.<a class="headerlink" href="#convertir-un-pandas-series-a-tensor" title="Permalink to this heading">#</a></h2>
+<p>En este caso lo que se debe hacer es pasar la serie de pandas a un numpy array, mediante la propiedad values y actuar como en el apartado anterior.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pandas_series</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">13.1</span><span class="p">])</span>
+<span class="n">store_with_numpy</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">pandas_series</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tensor almacenado como numpy array: &quot;</span><span class="p">,</span> <span class="n">store_with_numpy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dtype de tensor: &quot;</span><span class="p">,</span> <span class="n">store_with_numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;type de tensor: &quot;</span><span class="p">,</span> <span class="n">store_with_numpy</span><span class="o">.</span><span class="n">type</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tensor almacenado como numpy array:  tensor([ 1.0000,  0.2000,  3.0000, 13.1000], dtype=torch.float64)
+dtype de tensor:  torch.float64
+type de tensor:  torch.DoubleTensor
+</pre></div>
+</div>
+</div>
+</div>
+<p>Además, el marco Pytorch nos permite hacer muchas más cosas con los tensores, como que su método item() devuelve un número de Python como un tensor y el tolist(), método que devuelve una lista.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El segundo item es&quot;</span><span class="p">,</span><span class="n">new_tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<span class="n">tensor_to_list</span><span class="o">=</span><span class="n">new_tensor</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Como tensor:&#39;</span><span class="p">,</span> <span class="n">new_tensor</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Como lista:&quot;</span><span class="p">,</span><span class="n">tensor_to_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>El segundo item es 11
+Como tensor: tensor([10, 11, 12, 13]) 
+Como lista: [10, 11, 12, 13]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="indexacion-y-slicing-en-tensores-unidimensionales">
+<h2><span class="section-number">2.5. </span>Indexación y slicing en tensores unidimensionales.<a class="headerlink" href="#indexacion-y-slicing-en-tensores-unidimensionales" title="Permalink to this heading">#</a></h2>
+<p id="index-1">Las operaciones de indexación y slicing son casi las mismas en Pytorch que en Python. Por lo tanto, el primer índice siempre comienza en 0 y el último índice es menor que la longitud total del tensor. Use corchetes para acceder a cualquier número en un tensor.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tensor_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valor en el índice 0:&quot;</span><span class="p">,</span><span class="n">tensor_index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valor en el ídice 3:&quot;</span><span class="p">,</span><span class="n">tensor_index</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Valor en el índice 0: tensor(0)
+Valor en el ídice 3: tensor(3)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">])</span>
+<span class="n">sclicing_tensor</span> <span class="o">=</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ejemplo de tensor : &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;subset del ejemplo del tensor:&quot;</span><span class="p">,</span> <span class="n">sclicing_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ejemplo de tensor :  tensor([50, 11, 22, 33, 44])
+subset del ejemplo del tensor: tensor([11, 22, 33])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;valor del índice 3 del ejemplo del tensor:&quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">example_tensor</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Cambiamos el valor</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nueo tensor:&quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>valor del índice 3 del ejemplo del tensor: tensor(33)
+nueo tensor: tensor([50, 11, 22,  0, 44])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="funciones-para-los-tensores">
+<h2><span class="section-number">2.6. </span>Funciones para los tensores.<a class="headerlink" href="#funciones-para-los-tensores" title="Permalink to this heading">#</a></h2>
+<p>Existen una <a href="https://pytorch.org/docs/stable/torch.html" target="_blank"> serie de reducción de tensores </a> que los podemos encontrar en este enlace en el apartado <em>Reduction Ops</em>, algunas las vemos a continuación.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sample_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">min_value</span> <span class="o">=</span> <span class="n">sample_tensor</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">max_value</span> <span class="o">=</span> <span class="n">sample_tensor</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Obtenemos el valor mínimo de un tensor: &quot;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Obtenemos el valor máximo de un tensor: &quot;</span><span class="p">,</span> <span class="n">max_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Obtenemos el valor mínimo de un tensor:  tensor(1)
+Obtenemos el valor máximo de un tensor:  tensor(5)
+</pre></div>
+</div>
+</div>
+</div>
+<p>También se puede calcular la media y la desviación estándar. Veamoslo:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean_std_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">Mean</span> <span class="o">=</span> <span class="n">mean_std_tensor</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La media del tensor es: &quot;</span><span class="p">,</span> <span class="n">Mean</span><span class="p">)</span>
+<span class="n">std_dev</span> <span class="o">=</span> <span class="n">mean_std_tensor</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La desviación estándar del tensor es: &quot;</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>La media del tensor es:  tensor(0.)
+La desviación estándar del tensor es:  tensor(1.8257)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="n">add</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">multiply</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;addition of two tensors: &quot;</span><span class="p">,</span> <span class="n">add</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;multiplication of two tensors: &quot;</span><span class="p">,</span> <span class="n">multiply</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>addition of two tensors:  tensor([3, 5])
+multiplication of two tensors:  tensor([2, 6])
+</pre></div>
+</div>
+</div>
+</div>
+<p>También existe el método <em>torch.matmul</em>, cuyo comportamiento se puede ver <a href="https://pytorch.org/docs/stable/generated/torch.matmul.html" target="_blank"> en este enlace </a>.</p>
+</section>
+<section id="tensores-bidimensionales">
+<h2><span class="section-number">2.7. </span>Tensores bidimensionales.<a class="headerlink" href="#tensores-bidimensionales" title="Permalink to this heading">#</a></h2>
+<p>Veamos algunos ejemplo de generación de este tipo de elementos.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_2D_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">45</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">60</span><span class="p">]]</span>
+<span class="n">list_to_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">example_2D_list</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El tensor 2D generado es el siguiente: &quot;</span><span class="p">,</span> <span class="n">list_to_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>El tensor 2D generado es el siguiente:  tensor([[ 5, 10, 15, 20],
+        [25, 30, 35, 40],
+        [45, 50, 55, 60]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Obteniendo el shape del tensor: &quot;</span><span class="p">,</span> <span class="n">list_to_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Obteniendo el tamaño del tensor: &quot;</span><span class="p">,</span> <span class="n">list_to_tensor</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Obteniendo la dimensión del tensor: &quot;</span><span class="p">,</span> <span class="n">list_to_tensor</span><span class="o">.</span><span class="n">ndimension</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Obteniendo el shape del tensor:  torch.Size([3, 4])
+Obteniendo el tamaño del tensor:  torch.Size([3, 4])
+Obteniendo la dimensión del tensor:  2
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="conversion-entre-numpy-arrays-y-tensores">
+<h2><span class="section-number">2.8. </span>Conversión entre numpy arrays y tensores<a class="headerlink" href="#conversion-entre-numpy-arrays-y-tensores" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convirtiendo un tensor 2_D en numpy array</span>
+
+<span class="n">twoD_tensor_to_numpy</span> <span class="o">=</span> <span class="n">list_to_tensor</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Convirtiendo un 2_D tensor en numpy array:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numpy array después conversión: &quot;</span><span class="p">,</span> <span class="n">twoD_tensor_to_numpy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tipo datos después de la conversión: &quot;</span><span class="p">,</span> <span class="n">twoD_tensor_to_numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***************************************************************&quot;</span><span class="p">)</span>
+
+<span class="c1"># Recíproco: un numpy array a tensor</span>
+
+<span class="n">back_to_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">twoD_tensor_to_numpy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Convirtiendo un numpy array a tensor 2_D:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tensor después conversión:&quot;</span><span class="p">,</span> <span class="n">back_to_tensor</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo datos después conversión: &quot;</span><span class="p">,</span> <span class="n">back_to_tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Convirtiendo un 2_D tensor en numpy array:
+Numpy array después conversión:  [[ 5 10 15 20]
+ [25 30 35 40]
+ [45 50 55 60]]
+tipo datos después de la conversión:  int64
+***************************************************************
+Convirtiendo un numpy array a tensor 2_D:
+Tensor después conversión: tensor([[ 5, 10, 15, 20],
+        [25, 30, 35, 40],
+        [45, 50, 55, 60]])
+Tipo datos después conversión:  torch.int64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="conversion-entre-dataframes-y-tensores">
+<h2><span class="section-number">2.9. </span>Conversión entre dataframes y tensores<a class="headerlink" href="#conversion-entre-dataframes-y-tensores" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convirtiendo Pandas Dataframe  a Tensor</span>
+
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:[</span><span class="mi">22</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">26</span><span class="p">],</span><span class="s1">&#39;y&#39;</span><span class="p">:[</span><span class="mi">42</span><span class="p">,</span><span class="mi">52</span><span class="p">,</span><span class="mi">62</span><span class="p">]})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Conversión Pandas a numpy: &quot;</span><span class="p">,</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tipo de datos antes de la conversión conversion: &quot;</span><span class="p">,</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***********************************************&quot;</span><span class="p">)</span>
+
+<span class="n">pandas_to_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuevo ensor: &quot;</span><span class="p">,</span> <span class="n">pandas_to_tensor</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tipo de datos después de la conversión: &quot;</span><span class="p">,</span> <span class="n">pandas_to_tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Conversión Pandas a numpy:  [[22 42]
+ [24 52]
+ [26 62]]
+tipo de datos antes de la conversión conversion:  int64
+***********************************************
+Nuevo ensor:  tensor([[22, 42],
+        [24, 52],
+        [26, 62]])
+Tipo de datos después de la conversión:  torch.int64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="indexacion-y-slicin-en-2-d">
+<h2><span class="section-number">2.10. </span>Indexación y slicin en 2_D<a class="headerlink" href="#indexacion-y-slicin-en-2-d" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">120</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accediendo el 2 elemento de fila y columna: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Otra forma de acceder: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;********************************************************&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accediendo al elemento de 3 fila y 4 columna: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Otra forma: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Accediendo el 2 elemento de fila y columna:  tensor(60)
+Otra forma de acceder:  tensor(60)
+********************************************************
+Accediendo al elemento de 3 fila y 4 columna:  tensor(120)
+Otra forma:  tensor(120)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span>
+                               <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">120</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accediendo a dos primeros elementos segunda fila: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Otra forma: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;********************************************************&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accediendo a tres primeros elementos tercera fila:: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Otra forma: &quot;</span><span class="p">,</span> <span class="n">example_tensor</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Accediendo a dos primeros elementos segunda fila:  tensor([50, 60])
+Otra forma:  tensor([50, 60])
+********************************************************
+Accediendo a tres primeros elementos tercera fila::  tensor([ 90, 100, 110])
+Otra forma:  tensor([ 90, 100, 110])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="calculo-de-derivadas-con-pytorch">
+<h2><span class="section-number">2.11. </span>Cálculo de derivadas con Pytorch<a class="headerlink" href="#calculo-de-derivadas-con-pytorch" title="Permalink to this heading">#</a></h2>
+<p>En este apartado vamos a ver cómo calcular el valor de la derivada en un punto de una determinada función. En concreto lo vamos a hacer para la función <span class="math notranslate nohighlight">\(y=3 \cdot x^2\)</span>, cuya función derivada es <span class="math notranslate nohighlight">\(6 \cdot x\)</span>.</p>
+<p id="index-2">Para calcular la derivada, debemos declarar una variable como tensor, pero utilizando el parámetro <em>requires_grad = True</em> para indicar a Pytorch que para esta variable se van a poder calcular los gradientes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;creando el tensor  x: &quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>creando el tensor  x:  tensor(3., requires_grad=True)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Usaremos una ecuación simple como ejemplo 3x*2 y tomar la derivada con respecto a la variable x. Entonces, creemos otro tensor de acuerdo con la ecuación dada. Además, aplicaremos un método limpio .backwarden la variable yque forma un gráfico acíclico que almacena el historial de cálculo y evaluaremos el resultado con .grad el valor dado.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El resultado de la ecuación es : &quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Derivada de la ecuación en x = 3 is: &quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>El resultado de la ecuación es :  tensor(27., grad_fn=&lt;MulBackward0&gt;)
+Derivada de la ecuación en x = 3 is:  tensor(18.)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;El dato del tensor:&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;El dato de la derivada::&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;El dato de grad_fn::&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">grad_fn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El tensor is_leaf?:&quot;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El tensor tiene etributo requires_grad?:&quot;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>El dato del tensor: tensor(3.)
+El dato de la derivada:: tensor(18.)
+El dato de grad_fn:: None
+El tensor is_leaf?: True
+El tensor tiene etributo requires_grad?: True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;El dato del tensor:&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;El dato de la derivada:&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;El dato de grad_fn:&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">grad_fn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El tensor is_leaf?:&quot;</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El tensor tiene etributo requires_grad?:&quot;</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>El dato del tensor: tensor(27.)
+El dato de la derivada: None
+El dato de grad_fn: &lt;MulBackward0 object at 0x0000017585E2F0A0&gt;
+El tensor is_leaf?: False
+El tensor tiene etributo requires_grad?: True
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\Francisco\AppData\Local\Temp\ipykernel_3684\816567079.py:2: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won&#39;t be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more informations. (Triggered internally at aten\src\ATen/core/TensorBody.h:491.)
+  print(&#39;El dato de la derivada:&#39;,y.grad)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculamos la derivada con otra función</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">4</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;El resultado de la ecuación es: &quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La derivada en x = 3 es: &quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>El resultado de la ecuación es:  tensor(64., grad_fn=&lt;AddBackward0&gt;)
+La derivada en x = 3 es:  tensor(38.)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="calculo-de-derivadas-parciales-en-pytorch">
+<h2><span class="section-number">2.12. </span>Cálculo de derivadas parciales en Pytorch<a class="headerlink" href="#calculo-de-derivadas-parciales-en-pytorch" title="Permalink to this heading">#</a></h2>
+<p>Similar al cálculo de derivadas para funciones de una sóla variable, lo podemos hacer para más de una variable, es decir para derivadas parciales. Veamos un ejemplo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">4.</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">u</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">u</span><span class="o">*</span><span class="n">v</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor(3., requires_grad=True)
+tensor(4., requires_grad=True)
+tensor(91., grad_fn=&lt;AddBackward0&gt;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Paso atras para el cálculo de la derivaad</span>
+<span class="n">f</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Derivada parcial con respecto a u: &quot;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Derivada parcial con respecto a v: &quot;</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Derivada parcial con respecto a u:  tensor(43.)
+Derivada parcial con respecto a v:  tensor(20.)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="derivada-para-multiples-valores">
+<h2><span class="section-number">2.13. </span>Derivada para múltiples valores<a class="headerlink" href="#derivada-para-multiples-valores" title="Permalink to this heading">#</a></h2>
+<p id="index-3">Vamos a hacer una representación gráfica tanto de una función como de los valores de la derivada. Observar el uso de <em>detach</em> cuando un tensor está definido como <em>requires_grad = True</em>. Hay que dar este paso previo para pasarlo a un valor de tipo numpy y que así se pueda representar</p>
+<div class="cell docutils container" id="index-4">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Calculamos la derivada para múltiples valores</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="c1"># hacer esto para calcular derivada</span>
+<span class="n">y</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+ 
+<span class="c1"># Dibujamos la derivada y los valores de la función</span>
+<span class="n">function_line</span><span class="p">,</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">Y</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Function&#39;</span><span class="p">)</span>
+<span class="n">function_line</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">derivative_line</span><span class="p">,</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Derivada&#39;</span><span class="p">)</span>
+<span class="n">derivative_line</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/0766c958705e374015dd355d697ce1a4d0b815faa93108e2f151117f8e568b1a.png" src="../_images/0766c958705e374015dd355d697ce1a4d0b815faa93108e2f151117f8e568b1a.png" />
+</div>
+</div>
+<p>Para obtener el gráfico anterior, hay que tener en cuenta que cómo lo hacemos si tenemos una función con múltiples valores y necesitamos calcular la derivada con respecto a sus múltiples valores.</p>
+<p>Para hacer eso, haremos uso del atributo <em>sum</em>  para
+(1) producir una función de valor escalar, y luego
+(2) tomar la derivada.</p>
+<p>Así es como podemos ver el gráfico de ‘función vs. derivada’.</p>
+<p>Para un mayor entendimiento del paso backward <a href="https://medium.com/@monadsblog/pytorch-backward-function-e5e2b7e60140" target="_blank"> se recomienda ver este enlace </a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./jupyters"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="OperacionesTensores.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">1. </span>operaciones con tensores.</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="OptimizadoresPyTorch.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>Introducción a los optimizadores con PyTorch</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#los-tensores">2.1. Los tensores.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vectores-unidimensionales-en-pytorch">2.2. Vectores unidimensionales en Pytorch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convertir-numpy-array-a-tensores">2.3. Convertir numpy array a tensores.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convertir-un-pandas-series-a-tensor">2.4. Convertir un pandas series a tensor.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indexacion-y-slicing-en-tensores-unidimensionales">2.5. Indexación y slicing en tensores unidimensionales.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funciones-para-los-tensores">2.6. Funciones para los tensores.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensores-bidimensionales">2.7. Tensores bidimensionales.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conversion-entre-numpy-arrays-y-tensores">2.8. Conversión entre numpy arrays y tensores</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conversion-entre-dataframes-y-tensores">2.9. Conversión entre dataframes y tensores</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indexacion-y-slicin-en-2-d">2.10. Indexación y slicin en 2_D</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-de-derivadas-con-pytorch">2.11. Cálculo de derivadas con Pytorch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-de-derivadas-parciales-en-pytorch">2.12. Cálculo de derivadas parciales en Pytorch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivada-para-multiples-valores">2.13. Derivada para múltiples valores</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Francisco Rodríguez
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+Traceback (most recent call last):
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\jupyter_cache\executors\utils.py", line 51, in single_nb_execution
+    executenb(
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\nbclient\client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\nbclient\util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\nbclient\util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "D:\programas\Anaconda\envs\py39\lib\asyncio\base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\nbclient\client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\nbclient\client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "D:\programas\Anaconda\envs\py39\lib\site-packages\nbclient\client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+#from seq2seq import *
+import nltk
+from nltk.tokenize import sent_tokenize
+import gensim
+from gensim import corpora, downloader
+from gensim.parsing.preprocessing import *
+from gensim.utils import simple_preprocess
+from gensim.models import Word2Vec
+from flair.data import Sentence
+from flair.embeddings import ELMoEmbeddings, WordEmbeddings, \
+TransformerWordEmbeddings, TransformerDocumentEmbeddings
+from datasets import load_dataset, Split
+from transformers import (
+DataCollatorForLanguageModeling,
+BertModel, BertTokenizer, BertForSequenceClassification,
+DistilBertModel, DistilBertTokenizer,
+DistilBertForSequenceClassification,
+AutoModelForSequenceClassification,
+AutoModel, AutoTokenizer, AutoModelForCausalLM,
+Trainer, TrainingArguments, pipeline, TextClassificationPipeline
+)
+from transformers.pipelines import SUPPORTED_TASKS
+------------------
+
+[1;31m---------------------------------------------------------------------------[0m
+[1;31mValueError[0m                                Traceback (most recent call last)
+Input [1;32mIn [9][0m, in [0;36m<cell line: 4>[1;34m()[0m
+[0;32m      2[0m [38;5;28;01mimport[39;00m [38;5;21;01mnltk[39;00m
+[0;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01mnltk[39;00m[38;5;21;01m.[39;00m[38;5;21;01mtokenize[39;00m [38;5;28;01mimport[39;00m sent_tokenize
+[1;32m----> 4[0m [38;5;28;01mimport[39;00m [38;5;21;01mgensim[39;00m
+[0;32m      5[0m [38;5;28;01mfrom[39;00m [38;5;21;01mgensim[39;00m [38;5;28;01mimport[39;00m corpora, downloader
+[0;32m      6[0m [38;5;28;01mfrom[39;00m [38;5;21;01mgensim[39;00m[38;5;21;01m.[39;00m[38;5;21;01mparsing[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpreprocessing[39;00m [38;5;28;01mimport[39;00m [38;5;241m*[39m
+
+File [1;32mD:\programas\Anaconda\envs\py39\lib\site-packages\gensim\__init__.py:5[0m, in [0;36m<module>[1;34m[0m
+[0;32m      1[0m [38;5;124;03m"""This package contains interfaces and functionality to compute pair-wise document similarities within a corpus[39;00m
+[0;32m      2[0m [38;5;124;03mof documents.[39;00m
+[0;32m      3[0m [38;5;124;03m"""[39;00m
+[1;32m----> 5[0m [38;5;28;01mfrom[39;00m [38;5;21;01mgensim[39;00m [38;5;28;01mimport[39;00m parsing, corpora, matutils, interfaces, models, similarities, summarization, utils  [38;5;66;03m# noqa:F401[39;00m
+[0;32m      6[0m [38;5;28;01mimport[39;00m [38;5;21;01mlogging[39;00m
+[0;32m      8[0m __version__ [38;5;241m=[39m [38;5;124m'[39m[38;5;124m3.8.3[39m[38;5;124m'[39m
+
+File [1;32mD:\programas\Anaconda\envs\py39\lib\site-packages\gensim\corpora\__init__.py:6[0m, in [0;36m<module>[1;34m[0m
+[0;32m      1[0m [38;5;124;03m"""[39;00m
+[0;32m      2[0m [38;5;124;03mThis package contains implementations of various streaming corpus I/O format.[39;00m
+[0;32m      3[0m [38;5;124;03m"""[39;00m
+[0;32m      5[0m [38;5;66;03m# bring corpus classes directly into package namespace, to save some typing[39;00m
+[1;32m----> 6[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mindexedcorpus[39;00m [38;5;28;01mimport[39;00m IndexedCorpus  [38;5;66;03m# noqa:F401 must appear before the other classes[39;00m
+[0;32m      8[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mmmcorpus[39;00m [38;5;28;01mimport[39;00m MmCorpus  [38;5;66;03m# noqa:F401[39;00m
+[0;32m      9[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mbleicorpus[39;00m [38;5;28;01mimport[39;00m BleiCorpus  [38;5;66;03m# noqa:F401[39;00m
+
+File [1;32mD:\programas\Anaconda\envs\py39\lib\site-packages\gensim\corpora\indexedcorpus.py:15[0m, in [0;36m<module>[1;34m[0m
+[0;32m     11[0m [38;5;28;01mimport[39;00m [38;5;21;01msix[39;00m
+[0;32m     13[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m
+[1;32m---> 15[0m [38;5;28;01mfrom[39;00m [38;5;21;01mgensim[39;00m [38;5;28;01mimport[39;00m interfaces, utils
+[0;32m     17[0m logger [38;5;241m=[39m logging[38;5;241m.[39mgetLogger([38;5;18m__name__[39m)
+[0;32m     20[0m [38;5;28;01mclass[39;00m [38;5;21;01mIndexedCorpus[39;00m(interfaces[38;5;241m.[39mCorpusABC):
+
+File [1;32mD:\programas\Anaconda\envs\py39\lib\site-packages\gensim\interfaces.py:21[0m, in [0;36m<module>[1;34m[0m
+[0;32m     17[0m [38;5;28;01mfrom[39;00m [38;5;21;01m__future__[39;00m [38;5;28;01mimport[39;00m with_statement
+[0;32m     19[0m [38;5;28;01mimport[39;00m [38;5;21;01mlogging[39;00m
+[1;32m---> 21[0m [38;5;28;01mfrom[39;00m [38;5;21;01mgensim[39;00m [38;5;28;01mimport[39;00m utils, matutils
+[0;32m     22[0m [38;5;28;01mfrom[39;00m [38;5;21;01msix[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmoves[39;00m [38;5;28;01mimport[39;00m [38;5;28mrange[39m
+[0;32m     25[0m logger [38;5;241m=[39m logging[38;5;241m.[39mgetLogger([38;5;18m__name__[39m)
+
+File [1;32mD:\programas\Anaconda\envs\py39\lib\site-packages\gensim\matutils.py:1104[0m, in [0;36m<module>[1;34m[0m
+[0;32m   1099[0m     [38;5;28;01mreturn[39;00m [38;5;241m1.[39m [38;5;241m-[39m [38;5;28mfloat[39m([38;5;28mlen[39m(set1 [38;5;241m&[39m set2)) [38;5;241m/[39m [38;5;28mfloat[39m(union_cardinality)
+[0;32m   1102[0m [38;5;28;01mtry[39;00m:
+[0;32m   1103[0m     [38;5;66;03m# try to load fast, cythonized code if possible[39;00m
+[1;32m-> 1104[0m     [38;5;28;01mfrom[39;00m [38;5;21;01mgensim[39;00m[38;5;21;01m.[39;00m[38;5;21;01m_matutils[39;00m [38;5;28;01mimport[39;00m logsumexp, mean_absolute_difference, dirichlet_expectation
+[0;32m   1106[0m [38;5;28;01mexcept[39;00m [38;5;167;01mImportError[39;00m:
+[0;32m   1107[0m     [38;5;28;01mdef[39;00m [38;5;21mlogsumexp[39m(x):
+
+File [1;32m.eggs/Cython-0.29.14-py2.7-linux-x86_64.egg/Cython/Includes/numpy/__init__.pxd:242[0m, in [0;36minit gensim._matutils[1;34m()[0m
+
+[1;31mValueError[0m: numpy.ndarray size changed, may indicate binary incompatibility. Expected 96 from C header, got 80 from PyObject
+ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Expected 96 from C header, got 80 from PyObject
+
